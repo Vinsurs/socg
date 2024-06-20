@@ -1,0 +1,28 @@
+{
+  "name": "socg",
+  "version": "1.0.0",
+  "description": "swagger openapi codegen tool",
+  "main": "index.js",
+  "type": "module",
+  "bin": "index.js",
+  "scripts": {
+    "generate": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/generator": "^7.24.6",
+    "@babel/types": "^7.24.6",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "fs-extra": "^11.2.0",
+    "minimist": "^1.2.8",
+    "node-fetch": "^3.3.2",
+    "rimraf": "^5.0.5"
+  },
+  "devDependencies": {
+    "@types/minimist": "^1.2.5",
+    "@types/node": "^20.14.5"
+  }
+}
