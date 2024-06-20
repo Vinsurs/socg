@@ -5,6 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  soc:
+  socg:
     specifier: link:..
     version: link:..
