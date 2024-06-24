@@ -1,7 +1,9 @@
 // @ts-check
 import { generateEnumDeclaration, isEnumProperty } from "./enum.js";
-import { addComment, generate, generateExportDeclaration } from "./helper.js"
+import { fetchSwaggerJson } from "./fetch.js";
+import { addComment, generate, generateExportDeclaration, getPaths } from "./helper.js"
 import { generateInterfaceDeclaration } from "./interface-ts.js";
+import logger from "./logger.js";
 
 
 /**
@@ -31,3 +33,19 @@ export function handleSchema(schemaKey, schema) {
     return exportDeclaration
 }
 
+/**
+ * @param {string} swaggerJsonUrl 
+ */
+export async function preHandleSchemas(swaggerJsonUrl) {
+    logger.info("start downloading swagger json file...")
+    const swaggerJson = await fetchSwaggerJson(swaggerJsonUrl)
+    logger.success("swagger json downloaded successfully")
+    logger.info("swagger openapi verson:", swaggerJson.openapi)
+    logger.info("api doc title:", swaggerJson.info.title)
+    logger.info("api doc version:", swaggerJson.info.version)
+    const paths = getPaths(swaggerJson)
+    if (paths.length === 0) {
+        return Promise.reject(new Error("no paths found in swagger json"))
+    }
+    return swaggerJson
+}

@@ -1,14 +1,14 @@
 // @ts-check
 import fetch from "node-fetch"
 import fse from "fs-extra"
-import { pathResolve } from "./path.js"
 
 /**
  * @param {string} swaggerJsonUrl 
+ * @param {string} outputPath 
  */
-export function downLoadSwaggerJson(swaggerJsonUrl, downloadDir = process.cwd()) {
+export function downLoadSwaggerJson(swaggerJsonUrl, outputPath) {
     return new Promise((resolve, reject) => {
-        const ws = fse.createWriteStream(pathResolve(downloadDir, "./swagger.json"))
+        const ws = fse.createWriteStream(outputPath)
         fetch(swaggerJsonUrl, {
             method: "GET",
             headers: {
@@ -16,12 +16,14 @@ export function downLoadSwaggerJson(swaggerJsonUrl, downloadDir = process.cwd())
             },
         })
         .then(res => {
-            if (res.body) {
+            if (res.ok && res.body) {
                 res.body.pipe(ws)
                 res.body.on("end", () => {
                     ws.end()
                     resolve(null)
                 })
+            } else {
+                reject(new Error(res.statusText))
             }
         }, reject)        
     })
@@ -32,12 +34,20 @@ export function downLoadSwaggerJson(swaggerJsonUrl, downloadDir = process.cwd())
  * @returns {Promise<import("./types.js").SwaggerJson>}
  */
 export function fetchSwaggerJson(swaggerJsonUrl) {
-    // @ts-ignore
-    return fetch(swaggerJsonUrl, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
+    return new Promise((resolve, reject) => {
+        fetch(swaggerJsonUrl, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then(async res => {
+            if (res.ok) {
+                // @ts-ignore
+                resolve(await res.json())
+            } else {
+                reject(new Error(res.statusText))
+            }
+        }, reject)
     })
-    .then(res => res.json())
 }

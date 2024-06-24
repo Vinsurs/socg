@@ -1,7 +1,7 @@
 {
   "name": "socg",
   "version": "1.0.0",
-  "description": "swagger openapi codegen tool",
+  "description": "A swagger openapi codegen tool that can significantly improve your coding efficiency",
   "main": "index.js",
   "type": "module",
   "bin": "index.js",

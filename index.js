@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // @ts-check
 import fse from "fs-extra"
 import minimist from "minimist"
@@ -7,6 +8,13 @@ import { pathResolve } from "./utils/path.js"
 import { fetchSwaggerJson } from "./utils/fetch.js"
 import { getPaths } from "./utils/helper.js"
 import { handleSchemas } from "./utils/swagger.js"
+
+import { program } from "commander"
+import { createRequire } from "node:module"
+
+const require = createRequire(import.meta.url)
+
+const pkg = require("./package.json")
 
 const args = minimist(process.argv.slice(2), {
     default: {
@@ -40,4 +48,14 @@ async function bootstrap() {
     logger.success("接口类型定义文件生成成功")
 }
 
-bootstrap()
+// bootstrap()
+
+
+program
+.name(pkg.name)
+.description(pkg.description)
+.version(pkg.version)
+.executableDir("sub-cmds")
+.command("fetch", "get swagger api doc content")
+.command("model", "just only generate model file")
+.parse()
