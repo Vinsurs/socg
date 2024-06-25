@@ -9,7 +9,7 @@ const program = new Command()
 program
 .argument("<url>", "swagger json online url")
 .option("-o, --output [path]", "output path, if ignore this option, will use process.stdout to output the content")
-.addOption(new Option("-l, --locale [locale]", "set i18n locale").preset("en").default("en"))
+.addOption(new Option("-l, --locale [locale]", "set i18n locale").preset("en").default("en").choices(i18n.availableLocales))
 .action(function () {
     const nextLocale = this.opts().locale
     if (nextLocale !== i18n.locale && i18n.availableLocales.includes(nextLocale)) {

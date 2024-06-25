@@ -17,6 +17,6 @@ socg -h
 ### example
 
 ```bash
-socg -i http://petstore.swagger.io/v2/swagger.json -o ./petstore
+socg model http://example.swagger.io/v2/swagger.json -o types/api.ts --locale en
 ```
 

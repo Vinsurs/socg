@@ -10,7 +10,7 @@ const program = createCommand()
 program
 .argument("<url>", "swagger json online url")
 .requiredOption("-o, --output <path>", "the path in where the generated model file will be saved")
-.addOption(new Option("-l, --locale [locale]", "set i18n locale").preset("en").default("en"))
+.addOption(new Option("-l, --locale [locale]", "set i18n locale").preset("en").default("en").choices(i18n.availableLocales))
 .action(async function (url, options) {
     const nextLocale = this.opts().locale
     if (nextLocale !== i18n.locale && i18n.availableLocales.includes(nextLocale)) {
