@@ -8,6 +8,7 @@ import { pathResolve } from "./utils/path.js"
 import { fetchSwaggerJson } from "./utils/fetch.js"
 import { getPaths } from "./utils/helper.js"
 import { handleSchemas } from "./utils/swagger.js"
+import { default as i18n } from "./utils/i18n.js"
 
 import { program } from "commander"
 import { createRequire } from "node:module"
@@ -20,7 +21,12 @@ const args = minimist(process.argv.slice(2), {
     default: {
         "dir": "apis",
         "model": "model.ts",
-        "url": "http://192.168.18.169:7100/swagger/v1/swagger.json"
+        "url": "http://192.168.18.169:7100/swagger/v1/swagger.json",
+        "locale": "en"
+    },
+    string: ["locale"],
+    alias: {
+        "locale": ["l"]
     }
 })
 
@@ -57,5 +63,5 @@ program
 .version(pkg.version)
 .executableDir("sub-cmds")
 .command("fetch", "get swagger api doc content")
-.command("model", "just only generate model file")
+.command("model", "just only generate typescript model file")
 .parse()

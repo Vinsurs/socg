@@ -4,6 +4,7 @@ import { fetchSwaggerJson } from "./fetch.js";
 import { addComment, generate, generateExportDeclaration, getPaths } from "./helper.js"
 import { generateInterfaceDeclaration } from "./interface-ts.js";
 import logger from "./logger.js";
+import { default as i18n } from "./i18n.js";
 
 
 /**
@@ -37,15 +38,15 @@ export function handleSchema(schemaKey, schema) {
  * @param {string} swaggerJsonUrl 
  */
 export async function preHandleSchemas(swaggerJsonUrl) {
-    logger.info("start downloading swagger json file...")
+    logger.info(i18n.t("start_download_x", { name: "swagger json" }))
     const swaggerJson = await fetchSwaggerJson(swaggerJsonUrl)
-    logger.success("swagger json downloaded successfully")
-    logger.info("swagger openapi verson:", swaggerJson.openapi)
-    logger.info("api doc title:", swaggerJson.info.title)
-    logger.info("api doc version:", swaggerJson.info.version)
+    logger.success(i18n.t("dwonload_success_x", { name: "swagger json" }))
+    logger.info(i18n.t("openapi_version"), swaggerJson.openapi)
+    logger.info(i18n.t("doc_title"), swaggerJson.info.title)
+    logger.info(i18n.t("doc_version"), swaggerJson.info.version)
     const paths = getPaths(swaggerJson)
     if (paths.length === 0) {
-        return Promise.reject(new Error("no paths found in swagger json"))
+        return Promise.reject(new Error(i18n.t("no_paths_in_json")))
     }
     return swaggerJson
 }

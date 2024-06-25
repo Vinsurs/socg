@@ -1,0 +1,40 @@
+{
+    "en": {
+        "start_download_x": "start downloading %{name}...",
+        "dwonload_success_x": "%{name} download successfully",
+        "openapi_version": "swagger openapi verson:",
+        "doc_title": "api doc title:",
+        "doc_version": "api doc version:",
+        "no_paths_in_json": "no paths found in swagger json",
+        "fetch": {
+            "download_success": "download successfully",
+            "download_fail": "download failed: ",
+            "start_fetch_x": "start fetching %{name}...",
+            "fetch_success": "fetch successfully",
+            "fetch_fail": "fetch failed: "
+        },
+        "model": {
+            "start_generate": "start generating typescript model file...",
+            "generate_success_at": "typescript model file generated successfully at: "
+        }
+    },
+    "zh-CN": {
+        "start_download_x": "开始下载 %{name}...",
+        "dwonload_success_x": "%{name} 下载成功",
+        "openapi_version": "swagger openapi 版本:",
+        "doc_title": "api 文档标题:",
+        "doc_version": "api 文档版本:",
+        "no_paths_in_json": "swagger json中没有找到paths",
+        "fetch": {
+            "download_success": "下载成功",
+            "download_fail": "下载失败: ",
+            "start_fetch_x": "正在获取 %{name}...",
+            "fetch_success": "获取成功",
+            "fetch_fail": "获取失败: "
+        },
+        "model": {
+            "start_generate": "开始生成typescript类型文件...",
+            "generate_success_at": "typescript类型文件已成功生成: "
+        }
+    }
+}
