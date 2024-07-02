@@ -4,7 +4,7 @@ import { addComment, mapPropertyType } from "./helper.js"
 
 /**
  * @param {string} interfaceName
- * @param {import("./types.js").Schemas} properties
+ * @param {import("./types.js").SchemaProperty["properties"]} properties
  * @param {import("@babel/types").TSTypeParameterDeclaration | null} [typeParameters]
  * @returns {import("@babel/types").TSInterfaceDeclaration}
  */
@@ -36,7 +36,7 @@ export function generatePropertySignature({ key, type, optional, comment }) {
 }
 
 /**
- * @param {import("./types.js").Schemas} properties 
+ * @param {import("./types.js").SchemaProperty["properties"]} properties 
  * @returns {Array<import("./types.js").ProcessedPropertyDefinition>}
  */
 export function mapPropertiesToDefinition(properties) {
@@ -58,7 +58,7 @@ export function mapPropertyToDefinition(propertyName, property) {
             kind: "ts",
             node: getPropertyTypeAnnotation(property)
         },
-        optional: property.nullable,
+        optional: !!property.nullable,
         comment: property.description
     }
 }
@@ -79,6 +79,7 @@ export function getPropertyTypeAnnotation(property) {
 export function getPropertyType(property) {
     const tsType = mapPropertyType(property)
     if (tsType === "Array") {
+        // @ts-ignore
         return t.tSArrayType(getPropertyType(property.items))
     } else if (tsType === "boolean") {
         return t.tSBooleanKeyword()

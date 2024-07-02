@@ -11,6 +11,9 @@ dependencies:
   '@babel/types':
     specifier: ^7.24.6
     version: 7.24.6
+  case-anything:
+    specifier: ^3.1.0
+    version: 3.1.0
   chalk:
     specifier: ^5.3.0
     version: 5.3.0
@@ -29,11 +32,11 @@ dependencies:
   rimraf:
     specifier: ^5.0.5
     version: 5.0.5
+  slash:
+    specifier: ^5.1.0
+    version: 5.1.0
 
 devDependencies:
-  '@types/minimist':
-    specifier: ^1.2.5
-    version: 1.2.5
   '@types/node':
     specifier: ^20.14.5
     version: 20.14.5
@@ -118,10 +121,6 @@ packages:
     dev: false
     optional: true
 
-  /@types/minimist@1.2.5:
-    resolution: {integrity: sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==}
-    dev: true
-
   /@types/node@20.14.5:
     resolution: {integrity: sha512-aoRR+fJkZT2l0aGOJhuA8frnCSoNX6W7U2mpNq63+BxBIj5BQFt8rHy627kijCmm63ijdSdwvGgpUsU6MBsZZA==}
     dependencies:
@@ -162,6 +161,11 @@ packages:
     resolution: {integrity: sha512-XnAIvQ8eM+kC6aULx6wuQiwVsnzsi9d3WxzV3FpWTGA19F621kwdbsAcFKXgKUHZWsy+mY6iL1sHTxWEFCytDA==}
     dependencies:
       balanced-match: 1.0.2
+    dev: false
+
+  /case-anything@3.1.0:
+    resolution: {integrity: sha512-rRYnn5Elur8RuNHKoJ2b0tgn+pjYxL7BzWom+JZ7NKKn1lt/yGV/tUNwOovxYa9l9VL5hnXQdMc+mENbhJzosQ==}
+    engines: {node: '>=18'}
     dev: false
 
   /chalk@5.3.0:
@@ -374,6 +378,11 @@ packages:
   /signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
+    dev: false
+
+  /slash@5.1.0:
+    resolution: {integrity: sha512-ZA6oR3T/pEyuqwMgAKT0/hAv8oAXckzbkmR0UkUosQ+Mc4RxGoJkRmwHgHufaenlyAgE1Mxgpdcrf75y6XcnDg==}
+    engines: {node: '>=14.16'}
     dev: false
 
   /string-width@4.2.3:

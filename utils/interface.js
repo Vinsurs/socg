@@ -59,7 +59,7 @@ export function mapPropertyToDefinition(propertyName, property) {
             kind: "js",
             node: getPropertyType(property)
         },
-        optional: property.nullable,
+        optional: !!property.nullable,
         comment: property.description
     }
 }
@@ -71,6 +71,7 @@ export function mapPropertyToDefinition(propertyName, property) {
 export function getPropertyType(property) {
     const tsType = mapPropertyType(property)
     if (tsType === "Array") {
+        // @ts-ignore
         return t.arrayTypeAnnotation(getPropertyType(property.items))
     } else if (tsType === "boolean") {
         return t.booleanTypeAnnotation()

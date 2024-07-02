@@ -1,4 +1,6 @@
+// @ts-check
 import { Command, Option } from "commander"
+import fse from "fs-extra"
 import logger from "../utils/logger.js"
 import { downLoadSwaggerJson, fetchSwaggerJson } from "../utils/fetch.js"
 import { pathResolve } from "../utils/path.js"
@@ -19,6 +21,7 @@ program
     const outputPath = this.opts().output
     if (outputPath) {
         const path = pathResolve(process.cwd(), outputPath)
+        fse.ensureFileSync(path)
         logger.info(i18n.t("start_download_x", { name: "swagger json" }))
         downLoadSwaggerJson(url, path)
         .then(() => {

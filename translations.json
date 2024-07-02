@@ -2,10 +2,11 @@
     "en": {
         "start_download_x": "start downloading %{name}...",
         "dwonload_success_x": "%{name} download successfully",
-        "openapi_version": "swagger openapi verson:",
-        "doc_title": "api doc title:",
-        "doc_version": "api doc version:",
+        "openapi_version": "swagger openapi verson: ",
+        "doc_title": "api doc title: ",
+        "doc_version": "api doc version: ",
         "no_paths_in_json": "no paths found in swagger json",
+        "query_params": "query params",
         "fetch": {
             "download_success": "download successfully",
             "download_fail": "download failed: ",
@@ -16,15 +17,25 @@
         "model": {
             "start_generate": "start generating typescript model file...",
             "generate_success_at": "typescript model file generated successfully at: "
+        },
+        "generate": {
+            "start_generate": "start processing backend interface file...",
+            "finish_generate": "backend interface file handled completely",
+            "generate_endpoint": "Generating interface file: ",
+            "generate_endpoint_x_finished": "Generating interface file %{name} finished",
+            "generate_query_types_x": "generating query types file: %{name}",
+            "generate_query_types_x_finished": "Generating query types file %{name} finished",
+            "generate_query_types_fail_x": "Generating query types file %{name} failed: "
         }
     },
     "zh-CN": {
         "start_download_x": "开始下载 %{name}...",
         "dwonload_success_x": "%{name} 下载成功",
-        "openapi_version": "swagger openapi 版本:",
-        "doc_title": "api 文档标题:",
-        "doc_version": "api 文档版本:",
+        "openapi_version": "swagger openapi 版本: ",
+        "doc_title": "api 文档标题: ",
+        "doc_version": "api 文档版本: ",
         "no_paths_in_json": "swagger json中没有找到paths",
+        "query_params": "查询参数",
         "fetch": {
             "download_success": "下载成功",
             "download_fail": "下载失败: ",
@@ -35,6 +46,15 @@
         "model": {
             "start_generate": "开始生成typescript类型文件...",
             "generate_success_at": "typescript类型文件已成功生成: "
+        },
+        "generate": {
+            "start_generate": "开始处理后端接口文件...",
+            "finish_generate": "后端接口文件处理完成",
+            "generate_endpoint": "正在生成接口文件: ",
+            "generate_endpoint_x_finished": "接口文件 %{name} 生成完成",
+            "generate_query_types_x": "正在生成query类型文件: %{name}",
+            "generate_query_types_x_finished": "query类型文件 %{name} 生成完成",
+            "generate_query_types_fail_x": "生成query类型文件 %{name} 失败: "
         }
     }
 }

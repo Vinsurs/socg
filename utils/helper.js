@@ -8,7 +8,7 @@ const _generate =
 generator.default
 
 /**
- * @param {Record<string, any>} paths 
+ * @param {import("./types.js").SwaggerPaths} paths 
  */
 export function getPaths(paths) {
     return Object.keys(paths).filter(path => path && path !== "/")
@@ -31,6 +31,7 @@ export function mapPropertyType(property) {
         case "int32":
         case "integer":
             return "number"
+        case "bool":
         case "boolean":
             return "boolean"
         case "array":
@@ -83,4 +84,41 @@ export function generateExportDeclaration(declaration, named = true) {
 export function generate(filename, body = [], directives = []) {
     const program = t.program(body, directives, "module", null)
     return _generate(program, { filename })
+}
+
+/**
+ * generate import declaration
+ * @param {string} source 
+ * @param {string[]} locals
+ */
+export function generateImportDeclaration(source, locals) {
+    const specifiers = locals.map(local => {
+        return t.importSpecifier(t.identifier(local), t.identifier(local))
+    })
+    const node = t.importDeclaration(specifiers, t.stringLiteral(source))
+    node.importKind = "value"
+    return node
+}
+
+/**
+ * @param {import("./types.js").RouteParam[]} params 
+ * @param {string} [description] 
+ */
+export function generateFuncComments(params, description) {
+    let comment = ""
+    if (description) {
+        comment += `${description}\n`
+        if (params.length === 0) {
+            comment = comment.replace("\n", "")
+        }
+    }
+    if (params.length) {
+        if (!description) {
+            comment += `\n`
+        }
+        params.forEach(param => {
+            comment += ` * @param {${param.type}} ${param.name} ${param.description}\n`
+        })
+    }
+    return comment
 }

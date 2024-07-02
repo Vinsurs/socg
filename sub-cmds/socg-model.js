@@ -1,3 +1,4 @@
+// @ts-check
 import { createCommand, Option } from "commander"
 import fse from "fs-extra"
 import { pathResolve } from "../utils/path.js"
@@ -21,6 +22,8 @@ program
         const swaggerJson = await preHandleSchemas(url)
         logger.info(i18n.t("model.start_generate"))
         const schemaCode = handleSchemas(swaggerJson, outputPath)
+        fse.ensureFileSync(outputPath)
+        // @ts-ignore
         fse.writeFileSync(outputPath, schemaCode)
         logger.success(i18n.t("model.generate_success_at"), outputPath)
     } catch (error) {

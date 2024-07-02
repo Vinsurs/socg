@@ -7,7 +7,7 @@ import logger from "./logger.js";
 import { default as i18n } from "./i18n.js";
 
 
-/**
+/** handle generate typescript model file
  * @param {import("./types.js").SwaggerJson} swaggerJson swagger json object
  * @param {string} modelFileName model file name that used in warning messages
  * @returns {string | null} generated model code
@@ -44,7 +44,7 @@ export async function preHandleSchemas(swaggerJsonUrl) {
     logger.info(i18n.t("openapi_version"), swaggerJson.openapi)
     logger.info(i18n.t("doc_title"), swaggerJson.info.title)
     logger.info(i18n.t("doc_version"), swaggerJson.info.version)
-    const paths = getPaths(swaggerJson)
+    const paths = getPaths(swaggerJson.paths)
     if (paths.length === 0) {
         return Promise.reject(new Error(i18n.t("no_paths_in_json")))
     }

@@ -23,6 +23,7 @@ export function generateEnumDeclaration(enumName, enums) {
  * @returns {Array<import("./types.js").ProcessedEnumDefinition>}
  */
 export function mapEnumDefinition(enums) {
+    if (!enums) return []
     return enums.map((value, index) => {
         return {
             value,
