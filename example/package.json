@@ -7,7 +7,7 @@
     "socg:help": "socg help",
     "fetch": "socg fetch http://192.168.18.169:7100/swagger/v1/swagger.json -o apis/swagger.json",
     "model": "socg model http://192.168.18.169:7100/swagger/v1/swagger.json -o apis/model.ts",
-    "generate": "socg generate http://192.168.18.169:7100/swagger/v1/swagger.json -d apis/ -m model.ts -l zh-CN"
+    "generate": "socg generate http://192.168.18.100:2023/swagger/v1/swagger.json -d apis/ -m model.ts -l zh-CN"
   },
   "keywords": [],
   "author": "",
