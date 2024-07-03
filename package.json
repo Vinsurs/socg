@@ -1,6 +1,6 @@
 {
   "name": "socg",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A swagger openapi codegen tool that can significantly improve your coding efficiency",
   "main": "index.cjs",
   "type": "module",
