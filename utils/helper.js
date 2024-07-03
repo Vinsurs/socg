@@ -49,7 +49,7 @@ export function mapPropertyType(property) {
  */
 export function getRefType($ref) {
     // @ts-ignore
-    return $ref.split("/").pop()
+    return normalizeId($ref.split("/").pop())
 }
 
 /**
@@ -121,4 +121,11 @@ export function generateFuncComments(params, description) {
         })
     }
     return comment
+}
+
+/**
+ * @param {string} id 
+ */
+export function normalizeId(id) {
+    return id.replace(/[`'"]/g, "")
 }

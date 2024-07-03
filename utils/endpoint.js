@@ -13,6 +13,7 @@ let config = null
 const routeParamsReg = /\{\w+\}/g
 const queryParameterName = "query"
 const dataParameterName = "data"
+const unknownType = "unknown"
 /** handle backend api interface file generation
  * @param {import("./types.js").SwaggerJson} swaggerJson swagger json object
  * @param {string} outputPath output path
@@ -27,6 +28,9 @@ export async function handleInterfaceSchemas(swaggerJson, outputPath, modelPath,
     }
     /** @type {import("./types.js").TagsMapper} */
     const tagsMapper = {}
+    if (!swaggerJson.tags) {
+        swaggerJson.tags = extractTags(swaggerJson)
+    }
     swaggerJson.tags.forEach(tag => {
         tagsMapper[tag.name] = {
             ...tag,
@@ -53,6 +57,31 @@ export async function handleInterfaceSchemas(swaggerJson, outputPath, modelPath,
         const tagMapper = tagsMapper[tag]
         generateTagInterface(tagMapper, outputPath, modelPath)
     }
+}
+
+/**
+ * extract tags from paths if there is no tags field in swagger json
+ * @param {import("./types.js").SwaggerJson} swaggerJson 
+ */
+function extractTags(swaggerJson) {
+    /** @type {Set<string>} */
+    const tags = new Set()
+    Object.keys(swaggerJson.paths).forEach(path => {
+        const endpointDefinition = swaggerJson.paths[path]
+        const methods = Object.keys(endpointDefinition)
+        if (methods.length > 0) {
+            /** @type {import("./types.js").MethodDefinition} */
+            const firstDefinition = endpointDefinition[methods[0]]
+            const tag = firstDefinition.tags[0]
+            tags.add(tag)
+        }
+    })
+    return Array.from(tags, tag => {
+        return {
+            name: tag,
+            description: ""
+        }
+    })
 }
 
 /**
@@ -89,18 +118,20 @@ function generateTagInterfaceContent(tagMapper, filePath, modelPath) {
     const modelTypes = new Set()
     tagMapper.endpoints.forEach(({endpoint, endpointDefinition}) => {
         Object.keys(endpointDefinition).forEach(method => {
+            logger.info(i18n.t("generate.handle_endpoint_x", { name: endpoint, method }))
             // @ts-ignore
             const { queryTypeIdentifier, queryNode, declarationNode, bodyTypeIdentifier, responseTypeIdentifier } = generateExportEndpointFetch(endpoint, method, endpointDefinition[method])
-            if (queryTypeIdentifier) {
+            logger.success(i18n.t("generate.handle_endpoint_x_finished", { name: endpoint, method }))
+            if (queryTypeIdentifier && !isFallbackType(queryTypeIdentifier)) {
                 queryTypes.add(queryTypeIdentifier)
             }
             if (queryNode) {
                 queryNodes.push(queryNode)
             }
-            if (bodyTypeIdentifier) {
+            if (bodyTypeIdentifier && !isFallbackType(bodyTypeIdentifier)) {
                 modelTypes.add(bodyTypeIdentifier)
             }
-            if (responseTypeIdentifier) {
+            if (responseTypeIdentifier && !isFallbackType(responseTypeIdentifier)) {
                 modelTypes.add(responseTypeIdentifier)
             }
             body.push(declarationNode)
@@ -139,7 +170,7 @@ function generateTagInterfaceContent(tagMapper, filePath, modelPath) {
 function generateExportEndpointFetch(path, method, methodDefinition) {
     const funcName = makeEndpointFetchName(path, method)
     const { routeParams, queryTypeIdentifier, node } = handleQueryAndParams(methodDefinition, () => makeEndpointFetchQueryType(path, method))
-    const responseType = mapPropertyType(methodDefinition.responses["200"].content["application/json"].schema)
+    const responseType = getResponseType(methodDefinition.responses["200"].content)
     let bodyTypeIdentifier = ""
     /** @type {Parameters<import("./types.js").EndpointTemplate>["0"]} */
     const info = {
@@ -155,7 +186,7 @@ function generateExportEndpointFetch(path, method, methodDefinition) {
     }
     if (methodDefinition.requestBody) {
         info.BODY = dataParameterName
-        bodyTypeIdentifier = mapPropertyType(methodDefinition.requestBody.content["application/json"].schema)
+        bodyTypeIdentifier = getResponseType(methodDefinition.requestBody.content)
     }
     const returnExpression = config ? config.generate.template(info) : ""
     const declarationNode = generateEndpointFetchExportDeclaration({funcName, routeParams, queryTypeIdentifier, returnExpression, endpointComment: methodDefinition.summary, bodyTypeIdentifier})
@@ -166,6 +197,25 @@ function generateExportEndpointFetch(path, method, methodDefinition) {
         bodyTypeIdentifier,
         responseTypeIdentifier: info.RESPONSE
     }
+}
+
+/**
+ * @param {import("./types.js").EndpointResponse["content"]} content - endpoint response content
+ */
+function getResponseType(content) {
+    if (content && content["application/json"]) {
+        return mapPropertyType(content["application/json"].schema)
+    }
+    // fallback to unknown
+    return unknownType
+}
+
+/**
+ * Determnie the specified type should be imported from other file
+ * @param {string} type - type to check
+ */
+function isFallbackType(type) {
+    return type === unknownType
 }
 
 /**

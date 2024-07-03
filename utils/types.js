@@ -73,10 +73,12 @@ export {}
  * @property {{[statusCode: string]: EndpointResponse}} responses - endpint response
  */
 
+/** @typedef {"application/json" | "multipart/form-data"} ContentType */
+
 /**
  * @typedef {object} EndpointResponse
  * @property {string} description - response description
- * @property {{"application/json": {schema: {$ref: string;}}}} content - response body
+ * @property {{[contentType in ContentType]: {schema: {$ref: string;}}}} content - response body
  */
 
 /**

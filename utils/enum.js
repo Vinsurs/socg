@@ -1,5 +1,6 @@
 // @ts-check
 import * as t from "@babel/types"
+import { normalizeId } from "./helper.js"
 
 /**
  * @param {import("./types.js").SchemaProperty} property 
@@ -14,6 +15,7 @@ export function isEnumProperty(property) {
  * @returns {import("@babel/types").TSEnumDeclaration}
  */
 export function generateEnumDeclaration(enumName, enums) {
+    enumName = normalizeId(enumName)
     const enumDefinitions = mapEnumDefinition(enums)
     return t.tSEnumDeclaration(t.identifier(enumName), enumDefinitions.map(generateEnumMember))
 }

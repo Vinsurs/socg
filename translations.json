@@ -25,7 +25,9 @@
             "generate_endpoint_x_finished": "Generating interface file %{name} finished",
             "generate_query_types_x": "generating query types file: %{name}",
             "generate_query_types_x_finished": "Generating query types file %{name} finished",
-            "generate_query_types_fail_x": "Generating query types file %{name} failed: "
+            "generate_query_types_fail_x": "Generating query types file %{name} failed: ",
+            "handle_endpoint_x": "Handling endpont: %{method} %{name}",
+            "handle_endpoint_x_finished": "Handled successfully endpont: %{method} %{name}"
         }
     },
     "zh-CN": {
@@ -54,7 +56,9 @@
             "generate_endpoint_x_finished": "接口文件 %{name} 生成完成",
             "generate_query_types_x": "正在生成query类型文件: %{name}",
             "generate_query_types_x_finished": "query类型文件 %{name} 生成完成",
-            "generate_query_types_fail_x": "生成query类型文件 %{name} 失败: "
+            "generate_query_types_fail_x": "生成query类型文件 %{name} 失败: ",
+            "handle_endpoint_x": "正在处理接口: %{method} %{name}",
+            "handle_endpoint_x_finished": "已完成处理接口: %{method} %{name}"
         }
     }
 }

@@ -1,6 +1,6 @@
 // @ts-check
 import * as t from "@babel/types"
-import { addComment, mapPropertyType } from "./helper.js"
+import { addComment, mapPropertyType, normalizeId } from "./helper.js"
 
 /**
  * @param {string} interfaceName
@@ -9,6 +9,7 @@ import { addComment, mapPropertyType } from "./helper.js"
  * @returns {import("@babel/types").TSInterfaceDeclaration}
  */
 export function generateInterfaceDeclaration(interfaceName, properties, typeParameters = null) {
+    interfaceName = normalizeId(interfaceName)
     const id = t.identifier(interfaceName)
     const body = generateInterfaceBody(mapPropertiesToDefinition(properties))
     return t.tSInterfaceDeclaration(id, typeParameters, null, body)
