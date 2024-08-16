@@ -12,8 +12,6 @@ import { isBuitinType } from "./enum.js";
 /** @type {import("./types.js").Config | null} */
 let config = null
 const routeParamsReg = /\{\w+\}/g
-const queryParameterName = "query"
-const dataParameterName = "data"
 const unknownType = "unknown"
 /** handle backend api interface file generation
  * @param {import("./types.js").SwaggerJson} swaggerJson swagger json object
@@ -223,10 +221,10 @@ function generateExportEndpointFetch(path, method, methodDefinition) {
         info.URL = handlePathRouteParams(path)
     }
     if (queryTypeIdentifier) {
-        info.QUERY = queryParameterName
+        info.QUERY = config?.generate.queryParameterName
     }
     if (methodDefinition.requestBody) {
-        info.BODY = dataParameterName
+        info.BODY = config?.generate.dataParameterName
         bodyTypeIdentifier = getResponseType(methodDefinition.requestBody.content)
     }
     const returnExpression = config ? config.generate.template(info) : ""
@@ -275,12 +273,14 @@ function handlePathRouteParams(path) {
  * @returns {string} endpoint fetch function name
  */
 function makeEndpointFetchName(path, method) {
-    const last = path.indexOf("{")
-    if (last !== -1) {
-        path = path.slice(0, last - 1)
+    if (config && typeof config.generate.getEndpointFetchName === "function") {
+        const name = config.generate.getEndpointFetchName(path, method)
+        if (typeof name === "string") {
+            return name
+        }
     }
-    const sements = path.split("/")
-    return camelCase([method, ...sements].join("-"))
+    const segments = splitPath(path)
+    return camelCase([method, ...segments].join("-"))
 }
 
 /** function to generate fetch query type
@@ -289,9 +289,23 @@ function makeEndpointFetchName(path, method) {
  * @returns {string}
  */
 function makeEndpointFetchQueryType(path, method) {
-    const last = path.indexOf("{")
-    const sements = path.slice(0, last - 1).split("/")
-    return pascalCase([method, sements].join("-").concat("Query"))
+    if (config && typeof config.generate.getEndpointFetchQueryType === "function") {
+        const queryTypeName = config.generate.getEndpointFetchQueryType(path, method)
+        if (typeof queryTypeName === "string") {
+            return queryTypeName
+        }
+    }
+    const segments = splitPath(path)
+    return pascalCase([method, ...segments, "Query"].join("-"))
+}
+
+/**
+ * @param {string} path 
+ */
+function splitPath(path) {
+    return path.split("/").filter(Boolean).map(segment => {
+        return segment.replace(/^\{?(.*?)\}?$/, "$1")
+    })
 }
 
 /**
@@ -366,11 +380,13 @@ function generateEndpointFetchExportDeclaration({funcName, routeParams, queryTyp
         })
     }
     if (queryTypeIdentifier) {
-        const queryNode = generateFuncParameter(queryParameterName, queryTypeIdentifier)
+        // @ts-ignore
+        const queryNode = generateFuncParameter(config.generate.queryParameterName, queryTypeIdentifier)
         params.push(queryNode)
     }
     if (bodyTypeIdentifier) {
-        const dataNode = generateFuncParameter(dataParameterName, bodyTypeIdentifier)
+        // @ts-ignore
+        const dataNode = generateFuncParameter(config.generate.dataParameterName, bodyTypeIdentifier)
         params.push(dataNode)
     }
     // function body

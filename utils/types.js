@@ -28,7 +28,11 @@ export {}
  * @property {string[] | ((tag: string) => boolean)} [filterTag] - function to filter tags
  * @property {boolean} [allowImportingTsExtensions] - fit typescript `allowImportingTsExtensions` option, default is `true`
  * @property {boolean} [verbatimModuleSyntax] - fit typescript `verbatimModuleSyntax` option, default is `true`
- * @property {(endpoint: string) => string} [rewrite] - function to rewrite endpoint path
+ * @property {(endpoint: string) => string} [rewrite] - function to rewrite endpoint path. if the type of return value is not `string`, it will be ignored
+ * @property {string} [queryParameterName] - customize query parameter name, default is `query`
+ * @property {string} [dataParameterName] - customize request body parameter name, default is `data`
+ * @property {(path: string, method: EndpointMethod) => string} [getEndpointFetchName] - function to generate fetch function name for API endpoint, make sure it's unique in all endpoints. if the type of return value is not `string`, it will be ignored
+ * @property {(path: string, method: EndpointMethod) => string} [getEndpointFetchQueryType] - function to generate fetch function query parameter name for API endpoint, make sure it's unique in all endpoints. if the type of return value is not `string`, it will be ignored
  */
 
 /**

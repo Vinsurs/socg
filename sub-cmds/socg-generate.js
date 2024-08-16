@@ -10,9 +10,12 @@ import { handleInterfaceSchemas } from "../utils/endpoint.js"
 
 const require = createRequire(import.meta.url)
 
+/** @type {Partial<import("../utils/types.js").GenerateConfig>} */
 const defaults = {
     model: "model.ts",
     locale: "en",
+    queryParameterName: "query",
+    dataParameterName: "data"
 }
 
 // load config
@@ -59,6 +62,7 @@ program
         fse.writeFileSync(modelPath, schemaCode)
         logger.success(i18n.t("model.generate_success_at"), modelPath)
         logger.info(i18n.t("generate.start_generate"))
+        config.generate = options
         await handleInterfaceSchemas(swaggerJson, outputPath, modelPath, config)
         logger.success(i18n.t("generate.finish_generate"))
     } catch (error) {
