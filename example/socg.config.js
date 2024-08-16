@@ -21,6 +21,10 @@ module.exports = defineConfig({
         },
         dir: "apis",
         model: "model.ts",
-        locale: "zh-CN"
-    }
+        locale: "zh-CN",
+        allowImportingTsExtensions: false,
+        verbatimModuleSyntax: false,
+        filterTag: ['Media']
+    },
+    filterEndpoint: ['/api/media/count']
 })

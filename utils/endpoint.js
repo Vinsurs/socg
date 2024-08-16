@@ -22,9 +22,19 @@ const unknownType = "unknown"
  */
 export async function handleInterfaceSchemas(swaggerJson, outputPath, modelPath, configuaration) {
     config = configuaration
-    const paths = getPaths(swaggerJson.paths)
+    let paths = getPaths(swaggerJson.paths)
     if (paths.length === 0) {
         return Promise.reject(new Error(i18n.t("no_paths_in_json")))
+    }
+    // filter endpoints
+    if (config && config.filterEndpoint) {
+        if (Array.isArray(config.filterEndpoint) && config.filterEndpoint.length > 0) {
+            const filterEndpoint = config.filterEndpoint
+            paths = paths.filter(path => filterEndpoint.includes(path))
+        } else if (typeof config.filterEndpoint === "function") {
+            const filterFn = config.filterEndpoint
+            paths = paths.filter(path => filterFn(path))
+        }
     }
     /** @type {import("./types.js").TagsMapper} */
     const tagsMapper = {}
@@ -52,7 +62,19 @@ export async function handleInterfaceSchemas(swaggerJson, outputPath, modelPath,
             }
         }
     })
-    const tags = Object.keys(tagsMapper)
+    let tags = Object.keys(tagsMapper)
+    // filter tags
+    if (config) {
+        if (config.generate.filterTag) {
+            if (Array.isArray(config.generate.filterTag) && config.generate.filterTag.length > 0) {
+                const filterTag = config.generate.filterTag
+                tags = tags.filter(tag => filterTag.includes(tag))
+            } else if (typeof config.generate.filterTag === "function") {
+                const filterFn = config.generate.filterTag
+                tags = tags.filter(tag => filterFn(tag))
+            }
+        }
+    }
     for (const tag of tags) {
         const tagMapper = tagsMapper[tag]
         generateTagInterface(tagMapper, outputPath, modelPath)
@@ -90,10 +112,11 @@ function extractTags(swaggerJson) {
  * @param {string} modelPath 
  */
 function generateTagInterface(tagMapper, outputPath, modelPath) {
+    if (tagMapper.endpoints.length === 0) return;
     const filename = `${camelCase(tagMapper.name)}/index.ts`
     const filePath = pathResolve(outputPath, filename)
     logger.info(i18n.t("generate.generate_endpoint"), filename)
-    fse.ensureFileSync(filePath)
+    fse.ensureFileSync(filePath)    
     let content = generateTagInterfaceContent(tagMapper, filePath, modelPath)
     if (config && config.generate && typeof config.generate.output === "function") {
         content = config.generate.output(content)
@@ -139,24 +162,31 @@ function generateTagInterfaceContent(tagMapper, filePath, modelPath) {
     })
     // handle importers
     // handle model types import
+    const importOptions = {}
+    if (config) {
+        importOptions.allowImportingTsExtensions = config.generate.allowImportingTsExtensions
+        importOptions.verbatimModuleSyntax = config.generate.verbatimModuleSyntax
+    }
     const modelSource = pathRelative(filePath, modelPath)
-    const modelImporters = generateImportDeclaration(modelSource, Array.from(modelTypes))
+    const modelImporters = generateImportDeclaration(modelSource, Array.from(modelTypes), importOptions)
     body.unshift(modelImporters)
     // handle query types import
-    const queryFilename = `model.ts`
-    const queryFilepath = pathResolve(filePath, "..", queryFilename)
-    const querySource = pathRelative(filePath, queryFilepath)
-    const queryImporters = generateImportDeclaration(querySource, Array.from(queryTypes))
-    body.unshift(queryImporters)
-    // handle query types file generation
-    logger.info(i18n.t("generate.generate_query_types_x", { name: queryFilename }))
-    try {
-        const queryFileContent = generate(queryFilepath, queryNodes).code
-        fse.ensureFileSync(queryFilepath)
-        fse.writeFileSync(queryFilepath, queryFileContent)
-        logger.success(i18n.t("generate.generate_query_types_x_finished", { name: queryFilename }))
-    } catch (error) {
-        logger.error(i18n.t("generate.generate_query_types_fail_x", { name: queryFilename }))
+    if (queryTypes.size > 0) {
+        const queryFilename = `model.ts`
+        const queryFilepath = pathResolve(filePath, "..", queryFilename)
+        const querySource = pathRelative(filePath, queryFilepath)
+        const queryImporters = generateImportDeclaration(querySource, Array.from(queryTypes), importOptions)
+        body.unshift(queryImporters)
+        // handle query types file generation
+        logger.info(i18n.t("generate.generate_query_types_x", { name: queryFilename }))
+        try {
+            const queryFileContent = generate(queryFilepath, queryNodes).code
+            fse.ensureFileSync(queryFilepath)
+            fse.writeFileSync(queryFilepath, queryFileContent)
+            logger.success(i18n.t("generate.generate_query_types_x_finished", { name: queryFilename }))
+        } catch (error) {
+            logger.error(i18n.t("generate.generate_query_types_fail_x", { name: queryFilename }))
+        }
     }
     // handle endpoint api file generation
     return generate(filePath, body).code

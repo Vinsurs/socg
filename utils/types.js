@@ -7,6 +7,7 @@ export {}
  * @property {FetchComfig} [fetch] - configuration for fetch command
  * @property {ModelComfig} [model] - configuration for model command
  * @property {GenerateConfig} generate - configuration for generate command
+ * @property {string[] | ((endpoint: string) => boolean)} [filterEndpoint] - function to filter endpoints. currently only support `generate` command.
  */
 
 /**
@@ -24,6 +25,9 @@ export {}
  * @property {string} [dir] - the directory in where the generated file will be saved. you must specify this neither in config nor in command line
  * @property {string} [model] - the flle path that related to the `dir` option of the generated model file, default is `model.ts`
  * @property {"en"|"zh-CN"} [locale] - set i18n locale, default is `en`
+ * @property {string[] | ((tag: string) => boolean)} [filterTag] - function to filter tags
+ * @property {boolean} allowImportingTsExtensions - fit typescript `allowImportingTsExtensions` option, default is `true`
+ * @property {boolean} verbatimModuleSyntax - fit typescript `verbatimModuleSyntax` option, default is `true`
  */
 
 /**

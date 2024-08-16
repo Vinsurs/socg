@@ -90,13 +90,21 @@ export function generate(filename, body = [], directives = []) {
  * generate import declaration
  * @param {string} source 
  * @param {string[]} locals
+ * @param {Pick<import("./types.js").GenerateConfig, "allowImportingTsExtensions" | "verbatimModuleSyntax">} [options]
  */
-export function generateImportDeclaration(source, locals) {
+export function generateImportDeclaration(source, locals, options) {
+    options = Object.assign({}, {
+        allowImportingTsExtensions: true,
+        verbatimModuleSyntax: true
+    }, options)
     const specifiers = locals.map(local => {
         return t.importSpecifier(t.identifier(local), t.identifier(local))
     })
+    if (!options.allowImportingTsExtensions) {
+        source = source.replace(/\.ts$/, "")
+    }
     const node = t.importDeclaration(specifiers, t.stringLiteral(source))
-    node.importKind = "value"
+    node.importKind = options.verbatimModuleSyntax ? "value" : "type"
     return node
 }
 
