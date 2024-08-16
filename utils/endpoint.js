@@ -2,7 +2,7 @@
 import * as t from "@babel/types"
 import fse from "fs-extra"
 import { camelCase, pascalCase } from "case-anything"
-import { addComment, generate, generateFuncComments, generateImportDeclaration, getPaths, mapPropertyType } from "./helper.js";
+import { addComment, generate, generateFuncComments, generateImportDeclaration, getPaths, intro, mapPropertyType } from "./helper.js";
 import { handleSchema } from "./swagger.js";
 import { default as i18n } from "./i18n.js";
 import { pathRelative, pathResolve } from "./path.js";
@@ -117,8 +117,13 @@ function generateTagInterface(tagMapper, outputPath, modelPath) {
     logger.info(i18n.t("generate.generate_endpoint"), filename)
     fse.ensureFileSync(filePath)    
     let content = generateTagInterfaceContent(tagMapper, filePath, modelPath)
-    if (config && config.generate && typeof config.generate.output === "function") {
-        content = config.generate.output(content)
+    if (config) {
+        if (config.generate && typeof config.generate.output === "function") {
+            content = config.generate.output(content)
+            if (config.intro) {
+                content = intro(content)
+            }
+        }
     }
     fse.writeFileSync(filePath, content)
     logger.info(i18n.t("generate.generate_endpoint_x_finished", { name: filename }))
@@ -194,7 +199,7 @@ function generateTagInterfaceContent(tagMapper, filePath, modelPath) {
             }
             const queryFileContent = generate(queryFilepath, queryNodes).code
             fse.ensureFileSync(queryFilepath)
-            fse.writeFileSync(queryFilepath, queryFileContent)
+            fse.writeFileSync(queryFilepath, config?.intro ? intro(queryFileContent) : queryFileContent)
             logger.success(i18n.t("generate.generate_query_types_x_finished", { name: queryFilename }))
         } catch (error) {
             logger.error(i18n.t("generate.generate_query_types_fail_x", { name: queryFilename }))

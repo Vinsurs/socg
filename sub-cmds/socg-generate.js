@@ -7,6 +7,7 @@ import { handleSchemas, preHandleSchemas } from "../utils/swagger.js"
 import logger from "../utils/logger.js"
 import { default as i18n } from "../utils/i18n.js"
 import { handleInterfaceSchemas } from "../utils/endpoint.js"
+import { intro } from "../utils/helper.js"
 
 const require = createRequire(import.meta.url)
 
@@ -15,7 +16,7 @@ const defaults = {
     model: "model.ts",
     locale: "en",
     queryParameterName: "query",
-    dataParameterName: "data"
+    dataParameterName: "data",
 }
 
 // load config
@@ -32,6 +33,10 @@ const config = require(configPath)
 
 if (!config || !config.generate || typeof config.generate.template !== "function") {
     throw new Error("you must provide a template function to specify some generate rules to tell us how to generate api interface code in your `socg.config.(c)js`, that means you must configure the 'generate.template' option in you config")
+}
+
+if (typeof config.intro === "undefined") {
+    config.intro = true
 }
 
 const program = createCommand()
@@ -55,11 +60,13 @@ program
     try {
         const swaggerJson = await preHandleSchemas(url)
         logger.info(i18n.t("model.start_generate"))
-        const schemaCode = handleSchemas(swaggerJson, modelPath)
+        let schemaCode = handleSchemas(swaggerJson, modelPath)
         fse.emptydirSync(outputPath)
         fse.ensureFileSync(modelPath)
-        // @ts-ignore
-        fse.writeFileSync(modelPath, schemaCode)
+        if (schemaCode) {
+            // @ts-ignore
+            fse.writeFileSync(modelPath, config.intro ? intro(schemaCode) : schemaCode)
+        }
         logger.success(i18n.t("model.generate_success_at"), modelPath)
         logger.info(i18n.t("generate.start_generate"))
         config.generate = options
