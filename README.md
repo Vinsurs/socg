@@ -59,7 +59,8 @@ module.exports = defineConfig({
         // fit typescript verbatimModuleSyntax option, default is true
         verbatimModuleSyntax: false,
         // support filter tags
-        filterTag: ['Media']
+        filterTag: ['Media'],
+        rewrite: (path) => path.replace(/^\/api/, ''),
     },
     // support filter endpoints, but currently only support generate command.
     filterEndpoint: ['/api/media/count']

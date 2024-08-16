@@ -7,6 +7,7 @@ import { handleSchema } from "./swagger.js";
 import { default as i18n } from "./i18n.js";
 import { pathRelative, pathResolve } from "./path.js";
 import logger from "./logger.js";
+import { isBuitinType } from "./enum.js";
 
 /** @type {import("./types.js").Config | null} */
 let config = null
@@ -161,15 +162,17 @@ function generateTagInterfaceContent(tagMapper, filePath, modelPath) {
         })
     })
     // handle importers
-    // handle model types import
     const importOptions = {}
     if (config) {
         importOptions.allowImportingTsExtensions = config.generate.allowImportingTsExtensions
         importOptions.verbatimModuleSyntax = config.generate.verbatimModuleSyntax
     }
-    const modelSource = pathRelative(filePath, modelPath)
-    const modelImporters = generateImportDeclaration(modelSource, Array.from(modelTypes), importOptions)
-    body.unshift(modelImporters)
+    if (modelTypes.size > 0) {
+        // handle model types import
+        const modelSource = pathRelative(filePath, modelPath)
+        const modelImporters = generateImportDeclaration(modelSource, Array.from(modelTypes), importOptions)
+        body.unshift(modelImporters)
+    }
     // handle query types import
     if (queryTypes.size > 0) {
         const queryFilename = `model.ts`
@@ -198,6 +201,14 @@ function generateTagInterfaceContent(tagMapper, filePath, modelPath) {
  * @param {import("./types.js").MethodDefinition} methodDefinition - endpoint method definition
  */
 function generateExportEndpointFetch(path, method, methodDefinition) {
+    if (config) {
+        if (typeof config.generate.rewrite === "function") {
+            const _path = config.generate.rewrite(path)
+            if (typeof _path === "string") {
+                path = _path
+            }
+        }
+    }
     const funcName = makeEndpointFetchName(path, method)
     const { routeParams, queryTypeIdentifier, node } = handleQueryAndParams(methodDefinition, () => makeEndpointFetchQueryType(path, method))
     const responseType = getResponseType(methodDefinition.responses["200"].content)
@@ -245,7 +256,7 @@ function getResponseType(content) {
  * @param {string} type - type to check
  */
 function isFallbackType(type) {
-    return type === unknownType
+    return type === unknownType || isBuitinType(type)
 }
 
 /**

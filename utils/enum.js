@@ -53,3 +53,10 @@ export function matchEnumMemberInitializer(value) {
     // fallback to nullLiteral if value type does not match EnumValue
     else return t.nullLiteral()
 }
+/**
+ * @param {string} type 
+ * @returns 
+ */
+export function isBuitinType(type) {
+    return ["string", "number", "boolean", "null", "object", "unknown"].includes(type)
+}

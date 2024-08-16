@@ -24,7 +24,8 @@ module.exports = defineConfig({
         locale: "zh-CN",
         allowImportingTsExtensions: false,
         verbatimModuleSyntax: false,
-        filterTag: ['Media']
+        // filterTag: ['Media'],
+        rewrite: (path) => path.replace(/^\/api/, '')
     },
-    filterEndpoint: ['/api/media/count']
+    // filterEndpoint: ['/api/media/count']
 })

@@ -28,6 +28,7 @@ export {}
  * @property {string[] | ((tag: string) => boolean)} [filterTag] - function to filter tags
  * @property {boolean} allowImportingTsExtensions - fit typescript `allowImportingTsExtensions` option, default is `true`
  * @property {boolean} verbatimModuleSyntax - fit typescript `verbatimModuleSyntax` option, default is `true`
+ * @property {(endpoint: string) => string} [rewrite] - function to rewrite endpoint path
  */
 
 /**
