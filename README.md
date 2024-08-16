@@ -61,9 +61,12 @@ module.exports = defineConfig({
         // support filter tags
         filterTag: ['Media'],
         rewrite: (path) => path.replace(/^\/api/, ''),
+        // ...otherOptions
     },
     // support filter endpoints, but currently only support generate command.
-    filterEndpoint: ['/api/media/count']
+    filterEndpoint: ['/api/media/count'],
+    // default is `true` so you can also ignore this.
+    intro: true
 })
 ```
 then you can just config a npm script to generate your api code in your package.json:
