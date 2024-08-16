@@ -330,12 +330,10 @@ function handleQueryAndParams(methodDefinition, queryTypeGeneratorFn) {
                 if (!routeParams) {
                     routeParams = {}
                 }
-                routeParams = {
-                    [parameter.name]: {
-                        name: parameter.name,
-                        type: mapPropertyType(parameter.schema),
-                        description: parameter.description
-                    }
+                routeParams[parameter.name] = {
+                    name: parameter.name,
+                    type: mapPropertyType(parameter.schema),
+                    description: parameter.description
                 }
             } else if (parameter.in === "query") {
                 if (!schema.properties) {
