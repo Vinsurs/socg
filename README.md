@@ -53,8 +53,16 @@ module.exports = defineConfig({
         },
         dir: "apis",
         model: "model.ts",
-        locale: "zh-CN"
-    }
+        locale: "zh-CN",
+        // fit typescript allowImportingTsExtensions option, default is true
+        allowImportingTsExtensions: false,
+        // fit typescript verbatimModuleSyntax option, default is true
+        verbatimModuleSyntax: false,
+        // support filter tags
+        filterTag: ['Media']
+    },
+    // support filter endpoints, but currently only support generate command.
+    filterEndpoint: ['/api/media/count']
 })
 ```
 then you can just config a npm script to generate your api code in your package.json:
