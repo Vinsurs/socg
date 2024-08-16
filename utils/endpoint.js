@@ -276,8 +276,11 @@ function handlePathRouteParams(path) {
  */
 function makeEndpointFetchName(path, method) {
     const last = path.indexOf("{")
-    const sements = path.slice(0, last - 1).split("/")
-    return camelCase([method, sements].join("-"))
+    if (last !== -1) {
+        path = path.slice(0, last - 1)
+    }
+    const sements = path.split("/")
+    return camelCase([method, ...sements].join("-"))
 }
 
 /** function to generate fetch query type

@@ -26,8 +26,8 @@ export {}
  * @property {string} [model] - the flle path that related to the `dir` option of the generated model file, default is `model.ts`
  * @property {"en"|"zh-CN"} [locale] - set i18n locale, default is `en`
  * @property {string[] | ((tag: string) => boolean)} [filterTag] - function to filter tags
- * @property {boolean} allowImportingTsExtensions - fit typescript `allowImportingTsExtensions` option, default is `true`
- * @property {boolean} verbatimModuleSyntax - fit typescript `verbatimModuleSyntax` option, default is `true`
+ * @property {boolean} [allowImportingTsExtensions] - fit typescript `allowImportingTsExtensions` option, default is `true`
+ * @property {boolean} [verbatimModuleSyntax] - fit typescript `verbatimModuleSyntax` option, default is `true`
  * @property {(endpoint: string) => string} [rewrite] - function to rewrite endpoint path
  */
 
