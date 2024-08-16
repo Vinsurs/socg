@@ -58,5 +58,5 @@ export function matchEnumMemberInitializer(value) {
  * @returns 
  */
 export function isBuitinType(type) {
-    return ["string", "number", "boolean", "null", "object", "unknown"].includes(type)
+    return ["Array", "string", "number", "boolean", "null", "object", "unknown"].includes(type)
 }

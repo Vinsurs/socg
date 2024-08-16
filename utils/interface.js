@@ -58,7 +58,8 @@ export function mapPropertyToDefinition(propertyName, property) {
         key: propertyName,
         type: {
             kind: "js",
-            node: getPropertyType(property)
+            node: getPropertyType(property),
+            rawType: mapPropertyType(property)
         },
         optional: !!property.nullable,
         comment: property.description

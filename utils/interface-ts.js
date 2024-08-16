@@ -57,7 +57,8 @@ export function mapPropertyToDefinition(propertyName, property) {
         key: propertyName,
         type: {
             kind: "ts",
-            node: getPropertyTypeAnnotation(property)
+            node: getPropertyTypeAnnotation(property),
+            rawType: mapPropertyType(property)
         },
         optional: !!property.nullable,
         comment: property.description

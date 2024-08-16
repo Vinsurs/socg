@@ -16,7 +16,7 @@ export function getPaths(paths) {
 
 /** 
  * @param {import("./types.js").SchemaProperty} property
- * @returns {import("./types.js").SchemaPropertyType | string}
+ * @returns {import("./types.js").MappedPropertyType}
  */
 export function mapPropertyType(property) {
     const { type, $ref } = property

@@ -105,6 +105,8 @@ export {}
 
 /** @typedef {"string" | "number" | "int" | "int32" | "integer" | "bool" | "boolean" | "array" | "object"} SchemaPropertyType schema property type*/
 
+/** @typedef {"string" | "number" | "boolean" | "Array" | "object" | "unknown" | (string & {})} MappedPropertyType schema property mapped type*/
+
 /** 
  * @typedef {object} SchemaProperty schema property definition
  * @property {SchemaPropertyType} [type] - property type
@@ -123,12 +125,14 @@ export {}
  * @typedef {object} JSPropertyDefinition
  * @property {"js"} kind - language kind
  * @property {import("@babel/types").FlowType} node - property type Node
+ * @property {string} rawType - property type name raw string
  */
 
 /** 
  * @typedef {object} TSPropertyDefinition
  * @property {"ts"} kind - language kind
  * @property {import("@babel/types").TSTypeAnnotation} node - property type Node
+ * @property {string} rawType - property type name raw string
  */
 
 /** @typedef {JSPropertyDefinition | TSPropertyDefinition} PropertyDefinition */

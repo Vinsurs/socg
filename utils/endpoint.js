@@ -134,6 +134,8 @@ function generateTagInterfaceContent(tagMapper, filePath, modelPath) {
     const body = []
     /** @type {Set<string>} */
     const queryTypes = new Set()
+    /** @type {Set<string>} */
+    const queryFileImports = new Set()
     /** @type {import("./types.js").Statement[]} */
     const queryNodes = []
     /** @type {Set<string>} */
@@ -142,7 +144,7 @@ function generateTagInterfaceContent(tagMapper, filePath, modelPath) {
         Object.keys(endpointDefinition).forEach(method => {
             logger.info(i18n.t("generate.handle_endpoint_x", { name: endpoint, method }))
             // @ts-ignore
-            const { queryTypeIdentifier, queryNode, declarationNode, bodyTypeIdentifier, responseTypeIdentifier } = generateExportEndpointFetch(endpoint, method, endpointDefinition[method])
+            const { queryTypeIdentifier, queryNode, declarationNode, bodyTypeIdentifier, responseTypeIdentifier, queryModelImports } = generateExportEndpointFetch(endpoint, method, endpointDefinition[method])
             logger.success(i18n.t("generate.handle_endpoint_x_finished", { name: endpoint, method }))
             if (queryTypeIdentifier && !isFallbackType(queryTypeIdentifier)) {
                 queryTypes.add(queryTypeIdentifier)
@@ -156,6 +158,9 @@ function generateTagInterfaceContent(tagMapper, filePath, modelPath) {
             if (responseTypeIdentifier && !isFallbackType(responseTypeIdentifier)) {
                 modelTypes.add(responseTypeIdentifier)
             }
+            queryModelImports.forEach(local => {
+                queryFileImports.add(local)
+            })
             body.push(declarationNode)
         })
     })
@@ -181,6 +186,12 @@ function generateTagInterfaceContent(tagMapper, filePath, modelPath) {
         // handle query types file generation
         logger.info(i18n.t("generate.generate_query_types_x", { name: queryFilename }))
         try {
+            // handle query file imports
+            if (queryFileImports.size > 0) {
+                const queryFileImportSource = pathRelative(queryFilepath, modelPath)
+                const queryFileImportDec = generateImportDeclaration(queryFileImportSource, Array.from(queryFileImports), importOptions)
+                queryNodes.unshift(queryFileImportDec)
+            }
             const queryFileContent = generate(queryFilepath, queryNodes).code
             fse.ensureFileSync(queryFilepath)
             fse.writeFileSync(queryFilepath, queryFileContent)
@@ -208,7 +219,7 @@ function generateExportEndpointFetch(path, method, methodDefinition) {
         }
     }
     const funcName = makeEndpointFetchName(path, method)
-    const { routeParams, queryTypeIdentifier, node } = handleQueryAndParams(methodDefinition, () => makeEndpointFetchQueryType(path, method))
+    const { routeParams, queryTypeIdentifier, node, queryModelImports } = handleQueryAndParams(methodDefinition, () => makeEndpointFetchQueryType(path, method))
     const responseType = getResponseType(methodDefinition.responses["200"].content)
     let bodyTypeIdentifier = ""
     /** @type {Parameters<import("./types.js").EndpointTemplate>["0"]} */
@@ -234,7 +245,8 @@ function generateExportEndpointFetch(path, method, methodDefinition) {
         queryNode: node,
         declarationNode,
         bodyTypeIdentifier,
-        responseTypeIdentifier: info.RESPONSE
+        responseTypeIdentifier: info.RESPONSE,
+        queryModelImports
     }
 }
 
@@ -311,7 +323,7 @@ function splitPath(path) {
 /**
  * @param {import("./types.js").MethodDefinition} methodDefinition - endpoint method definition
  * @param {() => string} queryTypeGeneratorFn - function to generate fetch query type
- * @returns {{routeParams: import("./types.js").FetchExportOptions["routeParams"]; queryTypeIdentifier?: string; node: import("./types.js").Statement|null;}}
+ * @returns {{routeParams: import("./types.js").FetchExportOptions["routeParams"]; queryTypeIdentifier?: string; node: import("./types.js").Statement|null; queryModelImports: string[];}}
  */
 function handleQueryAndParams(methodDefinition, queryTypeGeneratorFn) {
     /** @type {import("./types.js").FetchExportOptions["routeParams"]} */
@@ -347,14 +359,24 @@ function handleQueryAndParams(methodDefinition, queryTypeGeneratorFn) {
             }
         })
     }
+    /** @type {string[]} */
+    const queryModelImports = []
     if (schema.properties) {
         queryTypeIdentifier = queryTypeGeneratorFn()
         node = handleSchema(queryTypeIdentifier, schema)
+        for (const parameterName of Object.keys(schema.properties)) {
+            const parameter = schema.properties[parameterName]
+            const type = mapPropertyType(parameter)
+            if (!isFallbackType(type)) {
+                queryModelImports.push(type)
+            }
+        }
     }
     return {
         routeParams,
         queryTypeIdentifier,
-        node
+        node,
+        queryModelImports
     }
 }
 
