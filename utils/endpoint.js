@@ -371,7 +371,10 @@ function handleQueryAndParams(methodDefinition, queryTypeGeneratorFn) {
         node = handleSchema(queryTypeIdentifier, schema)
         for (const parameterName of Object.keys(schema.properties)) {
             const parameter = schema.properties[parameterName]
-            const type = mapPropertyType(parameter)
+            let type = mapPropertyType(parameter)
+            if (type === "Array" && parameter.items) {
+                type = mapPropertyType(parameter.items)
+            }
             if (!isFallbackType(type)) {
                 queryModelImports.push(type)
             }
