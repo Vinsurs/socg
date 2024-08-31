@@ -242,6 +242,7 @@ function generateExportEndpointFetch(path, method, methodDefinition) {
     if (methodDefinition.requestBody) {
         info.BODY = config?.generate.dataParameterName
         bodyTypeIdentifier = getResponseType(methodDefinition.requestBody.content)
+        info.REQUESTCONTENTTYPE = getRequestContentType(methodDefinition.requestBody.content)
     }
     const returnExpression = config ? config.generate.template(info) : ""
     const declarationNode = generateEndpointFetchExportDeclaration({funcName, routeParams, queryTypeIdentifier, returnExpression, endpointComment: methodDefinition.summary, bodyTypeIdentifier})
@@ -259,11 +260,35 @@ function generateExportEndpointFetch(path, method, methodDefinition) {
  * @param {import("./types.js").EndpointResponse["content"]} content - endpoint response content
  */
 function getResponseType(content) {
-    if (content && content["application/json"]) {
-        return mapPropertyType(content["application/json"].schema)
+    if (content) {
+        if (content["application/json"]) {
+            return mapPropertyType(content["application/json"].schema)
+        } else if (content["application/x-www-form-urlencoded"]) {
+            return mapPropertyType(content["application/x-www-form-urlencoded"].schema)
+        } else if (content["multipart/form-data"]) {
+            return mapPropertyType(content["multipart/form-data"].schema)
+        }
     }
     // fallback to unknown
     return unknownType
+}
+
+/**
+ * @param {import("./types.js").EndpointResponse["content"]} content - endpoint response content
+ * @returns {import("./types.js").RequestContentType}
+ */
+function getRequestContentType(content) {
+    if (content) {
+        if (content["application/json"]) {
+            return "json"
+        } else if (content["application/x-www-form-urlencoded"]) {
+            return "url_encoded"
+        } else if (content["multipart/form-data"]) {
+            return "form_data"
+        }
+    }
+    // fallback to "other"
+    return "other"
 }
 
 /**

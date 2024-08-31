@@ -41,15 +41,19 @@ module.exports = defineConfig({
                 code
             ].join('\r\n')
         },
-        template({URL, METHOD, QUERY, BODY, RESPONSE}) {
+        template({URL, METHOD, QUERY, BODY, RESPONSE, REQUESTCONTENTTYPE}) {
             if (METHOD === "get" || METHOD === "delete") {
                 if (QUERY) {
                     return `http.${METHOD}<${RESPONSE}>(${URL}, ${QUERY})`
                 }
                 return `http.${METHOD}<${RESPONSE}>(${URL})`
             } else {
+                // you can specify the request content type according to the `REQUESTCONTENTTYPE` value
+                const contentType = REQUESTCONTENTTYPE === "form_data" ? "multipart/form-data" : "application/json"
                 if (BODY) {
-                    return `http.${METHOD}<${RESPONSE}>(${URL}, ${BODY})`
+                    return `http.${METHOD}<${RESPONSE}>(${URL}, ${BODY}, {
+                        "Content-Type": "${contentType}"
+                    })`
                 }
                 return `http.${METHOD}<${RESPONSE}>(${URL})`
             }
@@ -70,6 +74,7 @@ module.exports = defineConfig({
     // filterEndpoint: ['/api/media/count'],
     // default is `true` so you can also ignore this.
     intro: true,
+    // set line endings for output code.
     // eol: 'auto'
 })
 ```

@@ -51,6 +51,11 @@ export {}
  * @param {string} [info.QUERY] - endpoint query variable name if query exists
  * @param {string} [info.BODY] - endpoint request body variable name if request body exists
  * @param {string} info.RESPONSE - endpoint response type name
+ * @param {RequestContentType} info.REQUESTCONTENTTYPE - endpoint request body content type:
+ * - `json`: `application/json`;
+ * - `url_encoded`: `application/x-www-form-urlencoded`;
+ * - `form_data`: `multipart/form-data`;
+ * - `other`: other content type;
  * @returns {string}
  */
 
@@ -84,7 +89,7 @@ export {}
  * @property {{[statusCode: string]: EndpointResponse}} responses - endpint response
  */
 
-/** @typedef {"application/json" | "multipart/form-data"} ContentType */
+/** @typedef {"application/json" | "application/x-www-form-urlencoded" | "multipart/form-data"} ContentType */
 
 /**
  * @typedef {object} EndpointResponse
@@ -191,3 +196,5 @@ export {}
  */
 
 /** @typedef {'auto' | 'cr' | 'crlf' | 'lf'} LineEnding */
+
+/** @typedef {"json"|"form_data"|"url_encoded"|"other"} RequestContentType */
