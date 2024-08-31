@@ -9,6 +9,7 @@ export {}
  * @property {GenerateConfig} generate - configuration for generate command
  * @property {string[] | ((endpoint: string) => boolean)} [filterEndpoint] - function to filter endpoints. currently only support `generate` command.
  * @property {boolean} [intro] - whether to prepend prepared intro to generated file. default is `true`. currently only support `generate` command.
+ * @property {LineEnding} [eol] - end-of-line setting. default is `auto`. currently only support `generate` command.
  */
 
 /**
@@ -188,3 +189,5 @@ export {}
  * @property {string} endpoint - endpoint path
  * @property {EndpointDefinition} endpointDefinition - endpoint definition
  */
+
+/** @typedef {'auto' | 'cr' | 'crlf' | 'lf'} LineEnding */

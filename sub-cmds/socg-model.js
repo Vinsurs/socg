@@ -5,6 +5,7 @@ import { pathResolve } from "../utils/path.js"
 import { handleSchemas, preHandleSchemas } from "../utils/swagger.js"
 import logger from "../utils/logger.js"
 import { default as i18n } from "../utils/i18n.js"
+import { writeFileToDisk } from "../utils/helper.js"
 
 const program = createCommand()
 
@@ -24,7 +25,7 @@ program
         const schemaCode = handleSchemas(swaggerJson, outputPath)
         fse.ensureFileSync(outputPath)
         // @ts-ignore
-        fse.writeFileSync(outputPath, schemaCode)
+        writeFileToDisk(outputPath, schemaCode)
         logger.success(i18n.t("model.generate_success_at"), outputPath)
     } catch (error) {
         logger.warn(error.message)

@@ -1,6 +1,6 @@
 // @ts-check
 import * as t from "@babel/types"
-import { addComment, mapPropertyType, normalizeId } from "./helper.js"
+import { addComment, eolChar, mapPropertyType, normalizeId } from "./helper.js"
 
 /**
  * @param {string} interfaceName
@@ -29,7 +29,7 @@ export function generateObjectTypeAnnotation(propertyDefinitions) {
  * @returns {import("@babel/types").ObjectTypeProperty}
  */
 export function generateObjectTypeProperty({ key, type, optional, comment }) {
-    const id = t.identifier((comment ? "\n\t" : "") + key)
+    const id = t.identifier((comment ? eolChar + "\t" : "") + key)
     // @ts-ignore
     const node = t.objectTypeProperty(id, type.node, null)
     node.optional = optional

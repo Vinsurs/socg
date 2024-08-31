@@ -27,5 +27,6 @@ module.exports = defineConfig({
         // filterTag: ['Media'],
         rewrite: (path) => path.replace(/^\/api/, '')
     },
+    eol: "auto"
     // filterEndpoint: ['/api/media/count']
 })

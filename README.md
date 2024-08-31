@@ -36,7 +36,10 @@ const { defineConfig } = require("socg")
 module.exports = defineConfig({
     generate: {
         output(code) {
-            return `import http from "http";\r\n${code}`
+            return [
+                `import http from "http";`,
+                code
+            ].join('\r\n')
         },
         template({URL, METHOD, QUERY, BODY, RESPONSE}) {
             if (METHOD === "get" || METHOD === "delete") {
@@ -59,14 +62,15 @@ module.exports = defineConfig({
         // fit typescript verbatimModuleSyntax option, default is true
         verbatimModuleSyntax: false,
         // support filter tags
-        filterTag: ['Media'],
+        // filterTag: ['Media'],
         rewrite: (path) => path.replace(/^\/api/, ''),
         // ...otherOptions
     },
     // support filter endpoints, but currently only support generate command.
-    filterEndpoint: ['/api/media/count'],
+    // filterEndpoint: ['/api/media/count'],
     // default is `true` so you can also ignore this.
-    intro: true
+    intro: true,
+    // eol: 'auto'
 })
 ```
 then you can just config a npm script to generate your api code in your package.json:

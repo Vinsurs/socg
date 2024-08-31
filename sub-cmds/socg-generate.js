@@ -7,7 +7,7 @@ import { handleSchemas, preHandleSchemas } from "../utils/swagger.js"
 import logger from "../utils/logger.js"
 import { default as i18n } from "../utils/i18n.js"
 import { handleInterfaceSchemas } from "../utils/endpoint.js"
-import { intro } from "../utils/helper.js"
+import { intro, setLineEnding, writeFileToDisk } from "../utils/helper.js"
 
 const require = createRequire(import.meta.url)
 
@@ -58,14 +58,15 @@ program
     const outputPath = pathResolve(void 0, options.dir)
     const modelPath = pathResolve(outputPath, options.model)
     try {
+        setLineEnding(config.eol)
         const swaggerJson = await preHandleSchemas(url)
         logger.info(i18n.t("model.start_generate"))
         let schemaCode = handleSchemas(swaggerJson, modelPath)
         fse.emptydirSync(outputPath)
         fse.ensureFileSync(modelPath)
         if (schemaCode) {
-            // @ts-ignore
-            fse.writeFileSync(modelPath, config.intro ? intro(schemaCode) : schemaCode)
+            const code = config.intro ? intro(schemaCode) : schemaCode
+            writeFileToDisk(modelPath, code)
         }
         logger.success(i18n.t("model.generate_success_at"), modelPath)
         logger.info(i18n.t("generate.start_generate"))
