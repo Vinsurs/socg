@@ -1,6 +1,6 @@
 // @ts-check
 import chalk from "chalk"
-import { eolChar } from "./helper"
+import { eolChar } from "./helper.js"
 
 export default {
     /**

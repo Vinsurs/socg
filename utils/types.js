@@ -51,7 +51,7 @@ export {}
  * @param {string} [info.QUERY] - endpoint query variable name if query exists
  * @param {string} [info.BODY] - endpoint request body variable name if request body exists
  * @param {string} info.RESPONSE - endpoint response type name
- * @param {RequestContentType} info.REQUESTCONTENTTYPE - endpoint request body content type:
+ * @param {RequestContentType} [info.REQUESTCONTENTTYPE] - endpoint request body content type:
  * - `json`: `application/json`;
  * - `url_encoded`: `application/x-www-form-urlencoded`;
  * - `form_data`: `multipart/form-data`;
