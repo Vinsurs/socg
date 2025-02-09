@@ -10,27 +10,27 @@ import { default as i18n } from "./i18n.js";
 /** handle generate typescript model file
  * @param {import("./types.js").SwaggerJson} swaggerJson swagger json object
  * @param {string} modelFileName model file name that used in warning messages
- * @param {import("./types.js").Config['getEnumKey']} [getEnumKey]
+ * @param {import("./types.js").Config['customEnumMember']} [customEnumMember]
  * @returns {string | null} generated model code
  */
-export function handleSchemas(swaggerJson, modelFileName, getEnumKey) {
+export function handleSchemas(swaggerJson, modelFileName, customEnumMember) {
     const schemas = swaggerJson.components.schemas
     if (!schemas) return null;
     const schemaKeys = Object.keys(schemas)
     if (schemaKeys.length == 0) return null;
-    const body = schemaKeys.map(schemaKey => handleSchema(schemaKey, schemas[schemaKey], getEnumKey))
+    const body = schemaKeys.map(schemaKey => handleSchema(schemaKey, schemas[schemaKey], customEnumMember))
     return generate(modelFileName, body).code
 }
 
 /**
  * @param {string} schemaKey 
  * @param {import("./types.js").SchemaProperty} schema 
- * @param {import("./types.js").Config['getEnumKey']} getEnumKey
+ * @param {import("./types.js").Config['customEnumMember']} customEnumMember
  * @returns {import("@babel/types").Statement}
  */
-export function handleSchema(schemaKey, schema, getEnumKey) {
+export function handleSchema(schemaKey, schema, customEnumMember) {
     const exportDeclaration = generateExportDeclaration(
-        isEnumProperty(schema) ? generateEnumDeclaration(schemaKey, schema.enum, getEnumKey) : generateInterfaceDeclaration(schemaKey, schema.properties)
+        isEnumProperty(schema) ? generateEnumDeclaration(schemaKey, schema.enum, customEnumMember) : generateInterfaceDeclaration(schemaKey, schema.properties)
     )
     addComment(exportDeclaration, schema.description)
     return exportDeclaration

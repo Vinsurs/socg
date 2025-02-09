@@ -12,29 +12,30 @@ export function isEnumProperty(property) {
 /**
  * @param {string} enumName
  * @param {import("./types.js").SchemaProperty["enum"]} enums
- * @param {import("./types.js").Config['getEnumKey']} getEnumKey
+ * @param {import("./types.js").Config['customEnumMember']} customEnumMember
  * @returns {import("@babel/types").TSEnumDeclaration}
  */
-export function generateEnumDeclaration(enumName, enums, getEnumKey) {
+export function generateEnumDeclaration(enumName, enums, customEnumMember) {
     enumName = normalizeId(enumName)
-    const enumDefinitions = mapEnumDefinition(enums, getEnumKey)
+    const enumDefinitions = mapEnumDefinition(enums, customEnumMember)
     return t.tSEnumDeclaration(t.identifier(enumName), enumDefinitions.map(generateEnumMember))
 }
 
 /**
  * @param {import("./types.js").SchemaProperty["enum"]} enums 
- * @param {import("./types.js").Config['getEnumKey']} [getEnumKey]
+ * @param {import("./types.js").Config['customEnumMember']} [customEnumMember]
  * @returns {Array<import("./types.js").ProcessedEnumDefinition>}
  */
-export function mapEnumDefinition(enums, getEnumKey) {
+export function mapEnumDefinition(enums, customEnumMember) {
     if (!enums) return []
-    const customEnumKey = typeof getEnumKey === 'function'
+    const customEnumKey = typeof customEnumMember === 'function'
     return enums.map((value, index) => {
         let name = `Enum_${index}`
         if (customEnumKey) {
-            const customKey = getEnumKey(value)
-            if (typeof customKey === 'string') {
-                name = customKey
+            const custom = customEnumMember(value)
+            if (typeof custom === 'object') {
+                name = custom.name
+                value = custom.initializer
             }
         }
         return {

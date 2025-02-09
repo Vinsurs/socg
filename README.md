@@ -76,9 +76,9 @@ module.exports = defineConfig({
     intro: true,
     // set line endings for output code.
     // eol: 'auto',
-    // you can use `getEnumKey` option to custom enum type key.
-    // getEnumKey(enumValue) {
-    //   return 'Anything you want'
+    // you can use `customEnumMember` option to custom enum type key.
+    // customEnumMember(enumValue) {
+    //   return {name: 'enum_member_key', initializer: 'enum_member_value'}
     // }
 })
 ```

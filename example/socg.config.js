@@ -29,4 +29,14 @@ module.exports = defineConfig({
     },
     eol: "auto"
     // filterEndpoint: ['/api/media/count']
+    // customEnumMember(enumValue) {
+    //     if (enumValue.toString().indexOf('=') !== -1) {
+    //         const [name, initializer] = enumValue.toString().split('=')
+    //         const value = Number(initializer)
+    //         return {
+    //             name,
+    //             initializer: Number.isNaN(value) ? initializer : value
+    //         }
+    //     }
+    // }
 })
