@@ -100,7 +100,9 @@ export function generateExportDeclaration(declaration, named = true) {
  */
 export function generate(filename, body = [], directives = []) {
     const program = t.program(body, directives, "module", null)
-    return _generate(program, { filename })
+    return _generate(program, { filename, jsescOption: {
+        minimal: true
+    } })
 }
 
 /**
@@ -190,5 +192,5 @@ export function normalizeEol(text, lineEnding = 'auto') {
  * @param {import("./types.js").LineEnding} [lineEnding]
  */
 export function writeFileToDisk(dest, content, lineEnding) {
-    fse.writeFileSync(dest, normalizeEol(content, lineEnding || LINEENDING))
+    fse.writeFileSync(dest, normalizeEol(content, lineEnding || LINEENDING), "utf-8")
 }

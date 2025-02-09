@@ -10,6 +10,7 @@ export {}
  * @property {string[] | ((endpoint: string) => boolean)} [filterEndpoint] - function to filter endpoints. currently only support `generate` command.
  * @property {boolean} [intro] - whether to prepend prepared intro to generated file. default is `true`. currently only support `generate` command.
  * @property {LineEnding} [eol] - end-of-line setting. default is `auto`. currently only support `generate` command.
+ * @property {(enumValue: EnumValue) => string} [getEnumKey] - function to generate enum key. currently only support `generate` command.
  */
 
 /**

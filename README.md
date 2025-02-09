@@ -75,7 +75,11 @@ module.exports = defineConfig({
     // default is `true` so you can also ignore this.
     intro: true,
     // set line endings for output code.
-    // eol: 'auto'
+    // eol: 'auto',
+    // you can use `getEnumKey` option to custom enum type key.
+    // getEnumKey(enumValue) {
+    //   return 'Anything you want'
+    // }
 })
 ```
 then you can just config a npm script to generate your api code in your package.json:

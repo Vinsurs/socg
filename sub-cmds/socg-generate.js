@@ -61,7 +61,7 @@ program
         setLineEnding(config.eol)
         const swaggerJson = await preHandleSchemas(url)
         logger.info(i18n.t("model.start_generate"))
-        let schemaCode = handleSchemas(swaggerJson, modelPath)
+        let schemaCode = handleSchemas(swaggerJson, modelPath, config.getEnumKey)
         fse.emptydirSync(outputPath)
         fse.ensureFileSync(modelPath)
         if (schemaCode) {
