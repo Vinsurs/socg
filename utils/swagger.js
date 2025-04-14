@@ -25,7 +25,7 @@ export function handleSchemas(swaggerJson, modelFileName, customEnumMember) {
 /**
  * @param {string} schemaKey 
  * @param {import("./types.js").SchemaProperty} schema 
- * @param {import("./types.js").Config['customEnumMember']} customEnumMember
+ * @param {import("./types.js").Config['customEnumMember']} [customEnumMember]
  * @returns {import("@babel/types").Statement}
  */
 export function handleSchema(schemaKey, schema, customEnumMember) {

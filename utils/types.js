@@ -95,7 +95,7 @@ export {}
 /**
  * @typedef {object} EndpointResponse
  * @property {string} description - response description
- * @property {{[contentType in ContentType]: {schema: {$ref: string;}}}} content - response body
+ * @property {{[contentType in ContentType]: {schema: SchemaProperty}}} content - response body
  */
 
 /**
@@ -111,7 +111,7 @@ export {}
  * @typedef {{[schemaKey: string]: SchemaProperty}} Schemas
  */
 
-/** @typedef {"string" | "number" | "int" | "int32" | "integer" | "bool" | "boolean" | "array" | "object"} SchemaPropertyType schema property type*/
+/** @typedef {"string" | "number" | "int" | "int32" | "int64" | "integer" | "bool" | "boolean" | "array" | "object"} SchemaPropertyType schema property type*/
 
 /** @typedef {"string" | "number" | "boolean" | "Array" | "object" | "unknown" | (string & {})} MappedPropertyType schema property mapped type*/
 
@@ -121,7 +121,7 @@ export {}
  * @property {Schemas} [properties] - child properties
  * @property {SchemaProperty | false} [additionalProperties] - extra properties
  * @property {string} [description] - property description
- * @property {"int32"} [format] - property integer type
+ * @property {"int32" | "int64"} [format] - property integer type
  * @property {boolean} [nullable] - whether property can be null
  * @property {SchemaProperty} [items] - when type is array, this is the array item type
  * @property {string} [$ref] - when type is object, this is the object reference; eg."#/components/schemas/ByPartItem"
@@ -180,6 +180,7 @@ export {}
  * @property {string} returnExpression - endpoint fetch return expression
  * @property {string} [endpointComment] - endpoint comment
  * @property {string} [bodyTypeIdentifier] - endpoint request body type identifier
+ * @property {string[]} [bodyTypeParameters] - endpoint request body type's generic type parameters
  */
 
 /** @typedef {import("@babel/types").Node} Node */

@@ -12,7 +12,7 @@ export function isEnumProperty(property) {
 /**
  * @param {string} enumName
  * @param {import("./types.js").SchemaProperty["enum"]} enums
- * @param {import("./types.js").Config['customEnumMember']} customEnumMember
+ * @param {import("./types.js").Config['customEnumMember']} [customEnumMember]
  * @returns {import("@babel/types").TSEnumDeclaration}
  */
 export function generateEnumDeclaration(enumName, enums, customEnumMember) {

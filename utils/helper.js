@@ -33,6 +33,14 @@ export function getPaths(paths) {
 
 /** 
  * @param {import("./types.js").SchemaProperty} property
+ * @returns {boolean}
+ */
+export function isArrayProperty(property) {
+    return property.type === "array" && "items" in property
+}
+
+/** 
+ * @param {import("./types.js").SchemaProperty} property
  * @returns {import("./types.js").MappedPropertyType}
  */
 export function mapPropertyType(property) {
@@ -46,6 +54,7 @@ export function mapPropertyType(property) {
         case "number":
         case "int":
         case "int32":
+        case "int64":
         case "integer":
             return "number"
         case "bool":

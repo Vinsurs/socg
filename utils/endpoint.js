@@ -2,7 +2,7 @@
 import * as t from "@babel/types"
 import fse from "fs-extra"
 import { camelCase, pascalCase } from "case-anything"
-import { addComment, generate, generateFuncComments, generateImportDeclaration, getPaths, intro, mapPropertyType, writeFileToDisk } from "./helper.js";
+import { addComment, generate, generateFuncComments, generateImportDeclaration, getPaths, intro, isArrayProperty, mapPropertyType, writeFileToDisk } from "./helper.js";
 import { handleSchema } from "./swagger.js";
 import { default as i18n } from "./i18n.js";
 import { pathRelative, pathResolve } from "./path.js";
@@ -149,7 +149,7 @@ function generateTagInterfaceContent(tagMapper, filePath, modelPath) {
         Object.keys(endpointDefinition).forEach(method => {
             logger.info(i18n.t("generate.handle_endpoint_x", { name: endpoint, method }))
             // @ts-ignore
-            const { queryTypeIdentifier, queryNode, declarationNode, bodyTypeIdentifier, responseTypeIdentifier, queryModelImports } = generateExportEndpointFetch(endpoint, method, endpointDefinition[method])
+            const { queryTypeIdentifier, queryNode, declarationNode, bodyTypeIdentifier, responseTypeIdentifier, queryModelImports, bodyTypeParameters } = generateExportEndpointFetch(endpoint, method, endpointDefinition[method])
             logger.success(i18n.t("generate.handle_endpoint_x_finished", { name: endpoint, method }))
             if (queryTypeIdentifier && !isFallbackType(queryTypeIdentifier)) {
                 queryTypes.add(queryTypeIdentifier)
@@ -160,6 +160,11 @@ function generateTagInterfaceContent(tagMapper, filePath, modelPath) {
             if (bodyTypeIdentifier && !isFallbackType(bodyTypeIdentifier)) {
                 modelTypes.add(bodyTypeIdentifier)
             }
+            bodyTypeParameters.forEach(p => {
+                if (p && !isFallbackType(p)) {
+                    modelTypes.add(p)
+                }
+            })
             if (responseTypeIdentifier && !isFallbackType(responseTypeIdentifier)) {
                 modelTypes.add(responseTypeIdentifier)
             }
@@ -227,6 +232,8 @@ function generateExportEndpointFetch(path, method, methodDefinition) {
     const { routeParams, queryTypeIdentifier, node, queryModelImports } = handleQueryAndParams(methodDefinition, () => makeEndpointFetchQueryType(path, method))
     const responseType = getResponseType(methodDefinition.responses["200"].content)
     let bodyTypeIdentifier = ""
+    /** @type {import("./types.js").FetchExportOptions['bodyTypeParameters']} */
+    const bodyTypeParameters = []
     /** @type {Parameters<import("./types.js").EndpointTemplate>["0"]} */
     const info = {
         URL: `"${path}"`,
@@ -243,16 +250,21 @@ function generateExportEndpointFetch(path, method, methodDefinition) {
         info.BODY = config?.generate.dataParameterName
         bodyTypeIdentifier = getResponseType(methodDefinition.requestBody.content)
         info.REQUESTCONTENTTYPE = getRequestContentType(methodDefinition.requestBody.content)
+        const content = methodDefinition.requestBody.content["application/json"]
+        if (content && isArrayProperty(content.schema) && content.schema.items) {
+            bodyTypeParameters.push(mapPropertyType(content.schema.items))
+        }
     }
     const returnExpression = config ? config.generate.template(info) : ""
-    const declarationNode = generateEndpointFetchExportDeclaration({funcName, routeParams, queryTypeIdentifier, returnExpression, endpointComment: methodDefinition.summary, bodyTypeIdentifier})
+    const declarationNode = generateEndpointFetchExportDeclaration({funcName, routeParams, queryTypeIdentifier, returnExpression, endpointComment: methodDefinition.summary, bodyTypeIdentifier, bodyTypeParameters})
     return {
         queryTypeIdentifier,
         queryNode: node,
         declarationNode,
         bodyTypeIdentifier,
         responseTypeIdentifier: info.RESPONSE,
-        queryModelImports
+        queryModelImports,
+        bodyTypeParameters
     }
 }
 
@@ -397,7 +409,7 @@ function handleQueryAndParams(methodDefinition, queryTypeGeneratorFn) {
         for (const parameterName of Object.keys(schema.properties)) {
             const parameter = schema.properties[parameterName]
             let type = mapPropertyType(parameter)
-            if (type === "Array" && parameter.items) {
+            if (isArrayProperty(parameter) && parameter.items) {
                 type = mapPropertyType(parameter.items)
             }
             if (!isFallbackType(type)) {
@@ -416,7 +428,7 @@ function handleQueryAndParams(methodDefinition, queryTypeGeneratorFn) {
 /**
  * @param {import("./types.js").FetchExportOptions} fetchExportOptions 
  */
-function generateEndpointFetchExportDeclaration({funcName, routeParams, queryTypeIdentifier, returnExpression, endpointComment, bodyTypeIdentifier}) {
+function generateEndpointFetchExportDeclaration({funcName, routeParams, queryTypeIdentifier, returnExpression, endpointComment, bodyTypeIdentifier, bodyTypeParameters}) {
     // funciton name
     const functionName = t.identifier(funcName)
     // function parameters
@@ -439,7 +451,7 @@ function generateEndpointFetchExportDeclaration({funcName, routeParams, queryTyp
     }
     if (bodyTypeIdentifier) {
         // @ts-ignore
-        const dataNode = generateFuncParameter(config.generate.dataParameterName, bodyTypeIdentifier)
+        const dataNode = generateFuncParameter(config.generate.dataParameterName, bodyTypeIdentifier, bodyTypeParameters)
         params.push(dataNode)
     }
     // function body
@@ -461,10 +473,17 @@ function generateEndpointFetchExportDeclaration({funcName, routeParams, queryTyp
  * generate function parameter node
  * @param {string} paramName 
  * @param {string} paramType 
+ * @param {Array<string>} [paramTypeParameters] 
  */
-function generateFuncParameter(paramName, paramType) {
+function generateFuncParameter(paramName, paramType, paramTypeParameters) {
     const paramNode = t.identifier(paramName)
-    paramNode.typeAnnotation = t.typeAnnotation(t.genericTypeAnnotation(t.identifier(paramType)))
+    /** @type {import("@babel/types").TypeParameterInstantiation | null} */
+    let typeParameters = null
+    if (paramTypeParameters && paramTypeParameters.length > 0) {
+        const params = paramTypeParameters.map(p => t.genericTypeAnnotation(t.identifier(p)))
+        typeParameters = t.typeParameterInstantiation(params)
+    }
+    paramNode.typeAnnotation = t.typeAnnotation(t.genericTypeAnnotation(t.identifier(paramType), typeParameters))
     return paramNode
 }
 
