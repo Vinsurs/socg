@@ -120,9 +120,9 @@ function generateTagInterface(tagMapper, outputPath, modelPath) {
     if (config) {
         if (config.generate && typeof config.generate.output === "function") {
             content = config.generate.output(content)
-            if (config.intro) {
-                content = intro(content)
-            }
+        }
+        if (config.intro) {
+            content = intro(content)
         }
     }
     writeFileToDisk(filePath, content)
