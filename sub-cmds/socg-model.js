@@ -10,7 +10,7 @@ import { writeFileToDisk } from "../utils/helper.js"
 const program = createCommand()
 
 program
-.argument("<url>", "swagger json online url")
+.argument("<url>", "swagger schema local path or online url")
 .requiredOption("-o, --output <path>", "the path in where the generated model file will be saved")
 .addOption(new Option("-l, --locale [locale]", "set i18n locale").preset("en").default("en").choices(i18n.availableLocales))
 .action(async function (url, options) {

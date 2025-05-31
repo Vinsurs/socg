@@ -14,7 +14,7 @@ let config = null
 const routeParamsReg = /\{\w+\}/g
 const unknownType = "unknown"
 /** handle backend api interface file generation
- * @param {import("./types.js").SwaggerJson} swaggerJson swagger json object
+ * @param {import("./types.js").SwaggerJson} swaggerJson swagger schema object
  * @param {string} outputPath output path
  * @param {string} modelPath model path
  * @param {import("./types.js").Config} configuaration configuration
@@ -81,7 +81,7 @@ export async function handleInterfaceSchemas(swaggerJson, outputPath, modelPath,
 }
 
 /**
- * extract tags from paths if there is no tags field in swagger json
+ * extract tags from paths if there is no tags field in swagger schema
  * @param {import("./types.js").SwaggerJson} swaggerJson 
  */
 function extractTags(swaggerJson) {

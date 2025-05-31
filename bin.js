@@ -12,7 +12,7 @@ program
 .description(pkg.description)
 .version(pkg.version)
 .executableDir("sub-cmds")
-.command("fetch", "get swagger api doc content")
+.command("fetch", "get swagger OpenApi schema content")
 .command("model", "just only generate typescript model file")
 .command("generate", "generate backend interface call file and its typescript model file")
 .parse()

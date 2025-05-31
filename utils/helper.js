@@ -203,3 +203,10 @@ export function normalizeEol(text, lineEnding = 'auto') {
 export function writeFileToDisk(dest, content, lineEnding) {
     fse.writeFileSync(dest, normalizeEol(content, lineEnding || LINEENDING), "utf-8")
 }
+/**
+ * @param {string} url 
+ * @returns 
+ */
+export function isHTTPUrl(url) {
+    return /^https?:\/\//.test(url)
+}

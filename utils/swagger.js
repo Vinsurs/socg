@@ -1,6 +1,6 @@
 // @ts-check
 import { generateEnumDeclaration, isEnumProperty } from "./enum.js";
-import { fetchSwaggerJson } from "./fetch.js";
+import { fetchSwaggerSchema, loadSwaggerSchema } from "./fetch.js";
 import { addComment, generate, generateExportDeclaration, getPaths } from "./helper.js"
 import { generateInterfaceDeclaration } from "./interface-ts.js";
 import logger from "./logger.js";
@@ -8,7 +8,7 @@ import { default as i18n } from "./i18n.js";
 
 
 /** handle generate typescript model file
- * @param {import("./types.js").SwaggerJson} swaggerJson swagger json object
+ * @param {import("./types.js").SwaggerJson} swaggerJson swagger schema object
  * @param {string} modelFileName model file name that used in warning messages
  * @param {import("./types.js").Config['customEnumMember']} [customEnumMember]
  * @returns {string | null} generated model code
@@ -37,12 +37,12 @@ export function handleSchema(schemaKey, schema, customEnumMember) {
 }
 
 /**
- * @param {string} swaggerJsonUrl 
+ * @param {string} swaggerJsonUrl swagger schema local path or online url
  */
 export async function preHandleSchemas(swaggerJsonUrl) {
-    logger.info(i18n.t("start_download_x", { name: "swagger json" }))
-    const swaggerJson = await fetchSwaggerJson(swaggerJsonUrl)
-    logger.success(i18n.t("dwonload_success_x", { name: "swagger json" }))
+    logger.info(i18n.t("start_download_x", { name: "swagger schema" }))
+    const swaggerJson = await loadSwaggerSchema(swaggerJsonUrl)
+    logger.success(i18n.t("dwonload_success_x", { name: "swagger schema" }))
     logger.info(i18n.t("openapi_version"), swaggerJson.openapi)
     logger.info(i18n.t("doc_title"), swaggerJson.info.title)
     logger.info(i18n.t("doc_version"), swaggerJson.info.version)

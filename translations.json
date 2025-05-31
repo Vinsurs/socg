@@ -5,7 +5,7 @@
         "openapi_version": "swagger openapi verson: ",
         "doc_title": "api doc title: ",
         "doc_version": "api doc version: ",
-        "no_paths_in_json": "no paths found in swagger json",
+        "no_paths_in_json": "no paths found in swagger schema",
         "query_params": "query params",
         "fetch": {
             "download_success": "download successfully",
@@ -36,7 +36,7 @@
         "openapi_version": "swagger openapi 版本: ",
         "doc_title": "api 文档标题: ",
         "doc_version": "api 文档版本: ",
-        "no_paths_in_json": "swagger json中没有找到paths",
+        "no_paths_in_json": "swagger schema中没有找到paths",
         "query_params": "查询参数",
         "fetch": {
             "download_success": "下载成功",

@@ -61,7 +61,7 @@ export {}
  */
 
 /**
- * @typedef {object} SwaggerJson Swagger JSON object
+ * @typedef {object} SwaggerJson Swagger schema object
  * @property {string} openapi - openapi version
  * @property {object} info - api json info object
  * @property {string} info.title - api json doc title

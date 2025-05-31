@@ -42,7 +42,7 @@ if (typeof config.intro === "undefined") {
 const program = createCommand()
 
 program
-.argument("<url>", "swagger json online url")
+.argument("<url>", "swagger schema local path or online url")
 .option("-d, --dir [output-directory]", "the directory in where the generated file will be saved")
 .addOption(new Option("-m, --model [model-filename]", "the flle path that related to the `dir` option of the generated model file"))
 .addOption(new Option("-l, --locale [locale]", "set i18n locale").choices(i18n.availableLocales))
