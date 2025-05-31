@@ -2,10 +2,11 @@
   "name": "socg",
   "version": "1.4.2",
   "description": "A swagger openapi codegen tool that converts OpenAPI schemas to TypeScript to improve your develop efficiency significantly",
-  "main": "index.cjs",
+  "main": "index.js",
   "type": "module",
   "bin": "bin.js",
   "files": [
+    "index.js",
     "index.cjs",
     "bin.js",
     "utils",
@@ -14,7 +15,11 @@
   ],
   "scripts": {},
   "exports": {
-    ".": "./index.cjs"
+    ".": {
+      "import": "./index.js",
+      "require": "./index.cjs",
+      "default": "./index.js"
+    }
   },
   "keywords": [
     "openapi",
@@ -41,7 +46,8 @@
     "node-fetch": "^3.3.2",
     "rimraf": "^5.0.5",
     "slash": "^5.1.0",
-    "strip-bom": "^5.0.0"
+    "strip-bom": "^5.0.0",
+    "unconfig": "^7.3.2"
   },
   "devDependencies": {
     "@types/babel__generator": "^7.6.8",

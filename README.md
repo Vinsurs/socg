@@ -8,7 +8,7 @@
 + Generate runtime-free model types and api endpoint fecher for fetch client
 + Load schemas from YAML or JSON, locally or remotely
 + Generate types for even huge schemas within milliseconds
-+ **Highly-Configurable**, socg is configurable to make it easy to use any fetch client you like with `generate.template` option in your config file(socg.config.{cjs,js})
++ **Highly-Configurable**, socg is configurable to make it easy to use any fetch client you like with `generate.template` option in your config file(socg.config.{cjs,mjs,js,cts,mts,ts})
 + Super easy to use
 
 ### Install
@@ -42,14 +42,17 @@ socg generate http://example.swagger.io/v1/swagger.json -d apis/ -m model.ts -l 
 ```
 ### Config
 
-`socg` is configurable, that means you can customize generation with a config file called `socg.config.(c)js` in your project root directory.
+`socg` is configurable, that means you can customize generation with a config file called `socg.config.{cjs,mjs,js,cts,mts,ts}` in your project root directory.
 
 > Note: if you use `socg generate` command, do not forget to set `generate.template` option to tell us how you want to generate api fetcher for fetch client. This option is **required** in this scenario.
 
 here is a example configuration:
 
 ```js
+// socg.config.cjs
 const { defineConfig } = require("socg")
+// or `socg.config.mjs`
+// import { defineConfig } from "socg"
 
 module.exports = defineConfig({
     generate: {

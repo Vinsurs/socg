@@ -7,3 +7,5 @@ function defineConfig(config) {
     return config
 }
 exports.defineConfig = defineConfig
+/** @type {string} */
+exports.version = require("./package.json").version
