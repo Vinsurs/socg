@@ -4,22 +4,22 @@ export {}
 
 /**
  * @typedef {object} Config
- * @property {FetchComfig} [fetch] - configuration for fetch command
- * @property {ModelComfig} [model] - configuration for model command
+ * @property {FetchConfig} [fetch] - configuration for fetch command
+ * @property {ModelConfig} [model] - configuration for model command
  * @property {GenerateConfig} generate - configuration for generate command
  * @property {string[] | ((endpoint: string) => boolean)} [filterEndpoint] - function to filter endpoints. currently only support `generate` command.
  * @property {boolean} [intro] - whether to prepend prepared intro to generated file. default is `true`. currently only support `generate` command.
  * @property {LineEnding} [eol] - end-of-line setting. default is `auto`. currently only support `generate` command.
- * @property {(enumValue: EnumValue) => {name: string; initializer: EnumValue;} | void} [customEnumMember] - function to generate enum key. if ignored or no return value, it will use default generate strategy. currently only support `generate` command.
+ * @property {CustomEnumMember} [customEnumMember] - function to generate enum key. if ignored or no return value, it will use default generate strategy. currently only support `generate` command.
  * @property {boolean} [silent] - determine whether to output any information in stdout, default is `false`. currently only support `generate` command.
  */
 
 /**
- * @typedef {{}} FetchComfig
+ * @typedef {{}} FetchConfig
  */
 
 /**
- * @typedef {{}} ModelComfig
+ * @typedef {{}} ModelConfig
  */
 
 /**
@@ -59,6 +59,15 @@ export {}
  * - `form_data`: `multipart/form-data`;
  * - `other`: other content type;
  * @returns {string}
+ */
+
+/**
+ * @callback CustomEnumMember
+ * @param {EnumValue} enumValue
+ * @param {number} index
+ * @param {EnumValue[]} enums
+ * @param {string} scope
+ * @returns {{name: string; initializer: EnumValue;} | void}
  */
 
 /**

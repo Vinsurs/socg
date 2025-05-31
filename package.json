@@ -1,6 +1,6 @@
 {
   "name": "socg",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "A swagger openapi codegen tool that converts OpenAPI schemas to TypeScript to improve your develop efficiency significantly",
   "main": "index.js",
   "type": "module",

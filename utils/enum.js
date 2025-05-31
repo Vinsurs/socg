@@ -17,22 +17,23 @@ export function isEnumProperty(property) {
  */
 export function generateEnumDeclaration(enumName, enums, customEnumMember) {
     enumName = normalizeId(enumName)
-    const enumDefinitions = mapEnumDefinition(enums, customEnumMember)
+    const enumDefinitions = mapEnumDefinition(enumName, enums, customEnumMember)
     return t.tSEnumDeclaration(t.identifier(enumName), enumDefinitions.map(generateEnumMember))
 }
 
 /**
+ * @param {string} enumName
  * @param {import("./types.js").SchemaProperty["enum"]} enums 
  * @param {import("./types.js").Config['customEnumMember']} [customEnumMember]
  * @returns {Array<import("./types.js").ProcessedEnumDefinition>}
  */
-export function mapEnumDefinition(enums, customEnumMember) {
+export function mapEnumDefinition(enumName, enums, customEnumMember) {
     if (!enums) return []
     const customEnumKey = typeof customEnumMember === 'function'
     return enums.map((value, index) => {
         let name = `Enum_${index}`
         if (customEnumKey) {
-            const custom = customEnumMember(value)
+            const custom = customEnumMember(value, index, enums, enumName)
             if (typeof custom === 'object') {
                 name = custom.name
                 value = custom.initializer
