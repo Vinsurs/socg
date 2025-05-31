@@ -2,12 +2,21 @@
 import chalk from "chalk"
 import { eolChar } from "./helper.js"
 
+let SILENT = false
+/**
+ * @param {boolean} [silent] 
+ */
+export function setSilent(silent) {
+    if (typeof silent === "boolean")
+        SILENT = silent
+}
 export default {
     /**
      * @param {string} label 
      * @param  {...string} messages 
      */
     success(label, ...messages) {
+        if (SILENT) return
         messages.length > 0 ? process.stdout.write(label + chalk.green(...messages) + eolChar) : process.stdout.write(chalk.green(label) + eolChar)
     },
     /**
@@ -15,6 +24,7 @@ export default {
      * @param  {...string} messages 
      */
     error(label, ...messages) {
+        if (SILENT) return
         messages.length > 0 ? process.stdout.write(label + chalk.red(...messages) + eolChar) : process.stdout.write(chalk.red(label) + eolChar)
     },
     /**
@@ -22,6 +32,7 @@ export default {
      * @param  {...string} messages 
      */
     info(label, ...messages) {
+        if (SILENT) return
         messages.length > 0 ? process.stdout.write(label + chalk.cyan(...messages) + eolChar) : process.stdout.write(chalk.cyan(label) + eolChar)
     },
     /**
@@ -29,6 +40,7 @@ export default {
      * @param  {...string} messages 
      */
     warn(label, ...messages) {
+        if (SILENT) return
         messages.length > 0 ? process.stdout.write(label + chalk.yellow(...messages) + eolChar) : process.stdout.write(chalk.yellow(label) + eolChar)
     },
     /**
@@ -36,6 +48,7 @@ export default {
      * @param  {...string} messages 
      */
     debug(label, ...messages) {
+        if (SILENT) return
         messages.length > 0 ? process.stdout.write(label + chalk.gray(...messages) + eolChar) : process.stdout.write(chalk.gray(label) + eolChar)
     }
 }

@@ -3,7 +3,7 @@ import { createCommand, Option } from "commander"
 import fse from "fs-extra"
 import { pathResolve } from "../utils/path.js"
 import { handleSchemas, preHandleSchemas } from "../utils/swagger.js"
-import logger from "../utils/logger.js"
+import logger, { setSilent } from "../utils/logger.js"
 import { default as i18n } from "../utils/i18n.js"
 import { handleInterfaceSchemas } from "../utils/endpoint.js"
 import { intro, setLineEnding, writeFileToDisk } from "../utils/helper.js"
@@ -18,6 +18,7 @@ program
 .addOption(new Option("-l, --locale [locale]", "set i18n locale").choices(i18n.availableLocales))
 .action(async function (url, options = {}) {
     const config = await loadConfig()
+    setSilent(config.silent)
     options = Object.assign({}, config.generate, options)
     if (!options.dir) {
         throw new Error("'dir' option is required. you must provide a output directory to save the generated code")

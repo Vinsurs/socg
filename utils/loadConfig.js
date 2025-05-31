@@ -25,6 +25,9 @@ export async function loadConfig() {
                     if (typeof config.intro === "undefined") {
                         config.intro = true
                     }
+                    if (typeof config.silent === "undefined") {
+                        config.silent = false
+                    }
                     return {
                         ...config,
                         generate: {

@@ -111,7 +111,10 @@ then you can just config a npm script to generate your api code in your package.
         "generate": "socg generate http://example.swagger.io/v1/swagger.json"
     }
 }
+
 ```
+
+> Tip: If you don't want to see a large area of output information on the console anymore, you can disable the console output through the "**silent**" option.
 
 ### License
 
