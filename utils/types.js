@@ -212,15 +212,18 @@ export {}
 /** @typedef {"json"|"form_data"|"url_encoded"|"other"} RequestContentType */
 
 /** 
- * @callback UserConfigFn
+ * @callback UserConfigFnObject
  * @returns {Config}
  */
 
-/** @typedef {Promise<Config>} UserConfigPromise */
-
 /**
- * @callback UserConfigPromiseFn
- * @returns {UserConfigPromise}
+ * @callback UserConfigFnPromise
+ * @returns {Promise<Config>}
  */
 
-/** @typedef {Config | UserConfigFn | UserConfigPromise | UserConfigPromiseFn} UserConfig */
+/**
+ * @callback UserConfigFn
+ * @returns {Config | Promise<Config>}
+ */
+
+/** @typedef {Config | UserConfigFnObject | UserConfigFnPromise | UserConfigFn} UserConfigExport */
