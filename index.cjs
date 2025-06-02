@@ -1,8 +1,9 @@
 // @ts-check
-/**
- * @param {import("./utils/types").Config} config 
- * @returns {import("./utils/types").Config}
- */
+/** 
+ * @template {import("./utils/types").UserConfig} T
+ * @param {T} config
+ * @returns {T}
+*/
 function defineConfig(config) {
     return config
 }

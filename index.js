@@ -3,10 +3,11 @@ import { createRequire } from "node:module"
 
 const require = createRequire(import.meta.url)
 
-/**
- * @param {import("./utils/types").Config} config 
- * @returns {import("./utils/types").Config}
- */
+/** 
+ * @template {import("./utils/types").UserConfig} T
+ * @param {T} config
+ * @returns {T}
+*/
 export function defineConfig(config) {
     return config
 }

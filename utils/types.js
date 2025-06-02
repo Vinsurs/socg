@@ -210,3 +210,17 @@ export {}
 /** @typedef {'auto' | 'cr' | 'crlf' | 'lf'} LineEnding */
 
 /** @typedef {"json"|"form_data"|"url_encoded"|"other"} RequestContentType */
+
+/** 
+ * @callback UserConfigFn
+ * @returns {Config}
+ */
+
+/** @typedef {Promise<Config>} UserConfigPromise */
+
+/**
+ * @callback UserConfigPromiseFn
+ * @returns {UserConfigPromise}
+ */
+
+/** @typedef {Config | UserConfigFn | UserConfigPromise | UserConfigPromiseFn} UserConfig */
