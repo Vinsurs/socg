@@ -26,13 +26,14 @@ export async function handleInterfaceSchemas(swaggerJson, outputPath, modelPath,
         return Promise.reject(new Error(i18n.t("no_paths_in_json")))
     }
     // filter endpoints
-    if (config && config.filterEndpoint) {
+    /** @type {import('./types.js').FilterEndpointFn} */
+    let filterEndpointFn
+    if (config && typeof config.filterEndpoint === "function") {
+        filterEndpointFn = config.filterEndpoint
+    } else if (config && config.filterEndpoint) {
         if (Array.isArray(config.filterEndpoint) && config.filterEndpoint.length > 0) {
             const filterEndpoint = config.filterEndpoint
             paths = paths.filter(path => filterEndpoint.includes(path))
-        } else if (typeof config.filterEndpoint === "function") {
-            const filterFn = config.filterEndpoint
-            paths = paths.filter(path => filterFn(path))
         }
     }
     /** @type {import("./types.js").TagsMapper} */
@@ -48,16 +49,35 @@ export async function handleInterfaceSchemas(swaggerJson, outputPath, modelPath,
     })
     paths.forEach(endpoint => {
         const endpointDefinition = swaggerJson.paths[endpoint]
-        const keys = Object.keys(endpointDefinition)
-        if (keys.length > 0) {
+        const methods = Object.keys(endpointDefinition)
+        if (methods.length > 0) {
             /** @type {import("./types.js").MethodDefinition} */
-            const firstDefinition = endpointDefinition[keys[0]]
+            const firstDefinition = endpointDefinition[methods[0]]
             const tag = firstDefinition.tags[0]
             if (tag && tagsMapper[tag]) {
-                tagsMapper[tag].endpoints.push({
-                    endpoint,
-                    endpointDefinition
-                })
+                if (typeof filterEndpointFn === 'function') {
+                    /** @type {Partial<import("./types.js").EndpointDefinition} */
+                    const endpointDefinitionMutated = {}
+                    let n = 0
+                    methods.forEach(method => {
+                        if (filterEndpointFn(endpoint, method, tag)) {
+                            endpointDefinitionMutated[method] = endpointDefinition[method]
+                            ;n++
+                        }
+                    })
+                    if (n) {
+                        tagsMapper[tag].endpoints.push({
+                            endpoint,
+                            // @ts-ignore
+                            endpointDefinition: endpointDefinitionMutated
+                        })
+                    }
+                } else {
+                    tagsMapper[tag].endpoints.push({
+                        endpoint,
+                        endpointDefinition
+                    })
+                }
             }
         }
     })

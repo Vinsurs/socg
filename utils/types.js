@@ -7,11 +7,19 @@ export {}
  * @property {FetchConfig} [fetch] - configuration for fetch command
  * @property {ModelConfig} [model] - configuration for model command
  * @property {GenerateConfig} generate - configuration for generate command
- * @property {string[] | ((endpoint: string) => boolean)} [filterEndpoint] - function to filter endpoints. currently only support `generate` command.
+ * @property {string[] | FilterEndpointFn} [filterEndpoint] - function to filter endpoints. currently only support `generate` command.
  * @property {boolean} [intro] - whether to prepend prepared intro to generated file. default is `true`. currently only support `generate` command.
  * @property {LineEnding} [eol] - end-of-line setting. default is `auto`. currently only support `generate` command.
  * @property {CustomEnumMember} [customEnumMember] - function to generate enum key. if ignored or no return value, it will use default generate strategy. currently only support `generate` command.
  * @property {boolean} [silent] - determine whether to output any information in stdout, default is `false`. currently only support `generate` command.
+ */
+
+/**
+ * @callback FilterEndpointFn
+ * @param {string} endpoint - endpoint path
+ * @param {EndpointMethod} method - endpoint method
+ * @param {string} tag - endpoint tag
+ * @returns {boolean}
  */
 
 /**
@@ -85,7 +93,7 @@ export {}
  * @typedef {{[endpoint: string]: EndpointDefinition}} SwaggerPaths
  */
 
-/** @typedef {"get"|"post"|"put"|"delete"} EndpointMethod */
+/** @typedef {"get"|"post"|"put"|"delete"|(string & {})} EndpointMethod */
 
 /**
  * @typedef {{[method in EndpointMethod]: MethodDefinition}} EndpointDefinition
