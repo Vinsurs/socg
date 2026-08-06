@@ -58,28 +58,42 @@ module.exports = defineConfig({
     generate: {
         output(code) {
             return [
-                `import http from "http";`,
+                `import axios from "@/services/request";`,
+                `import type { DataExtact } from "@/api/model";`,
                 code
             ].join('\r\n')
         },
         template({URL, METHOD, QUERY, BODY, RESPONSE, REQUESTCONTENTTYPE}) {
             if (METHOD === "get" || METHOD === "delete") {
                 if (QUERY) {
-                    return `http.${METHOD}<${RESPONSE}>(${URL}, ${QUERY})`
+                    return `axios.${METHOD}<unknown, DataExtact<${RESPONSE}>>(${URL}, {
+                      params: ${QUERY}
+                    })`
+                } else if (BODY) {
+                  return `axios.${METHOD}<unknown, DataExtact<${RESPONSE}>>(${URL}, {
+                    data: ${BODY}
+                  })`
                 }
-                return `http.${METHOD}<${RESPONSE}>(${URL})`
+                return `axios.${METHOD}<unknown, DataExtact<${RESPONSE}>>(${URL})`
             } else {
                 // you can specify the request content type according to the `REQUESTCONTENTTYPE` value
                 const contentType = REQUESTCONTENTTYPE === "form_data" ? "multipart/form-data" : "application/json"
-                if (BODY) {
-                    return `http.${METHOD}<${RESPONSE}>(${URL}, ${BODY}, {
-                        "Content-Type": "${contentType}"
+                if (BODY || QUERY) {
+                    let params = ''
+                    if (QUERY) {
+                      params += `params: ${QUERY},`
+                    }
+                    return `axios.${METHOD}<unknown, DataExtact<${RESPONSE}>>(${URL}, ${BODY}, {
+                        ${params}
+                        headers: {
+                          "Content-Type": "${contentType}"
+                        }
                     })`
                 }
-                return `http.${METHOD}<${RESPONSE}>(${URL})`
+                return `axios.${METHOD}<unknown, DataExtact<${RESPONSE}>>(${URL})`
             }
         },
-        dir: "apis",
+        dir: "src/api/endpoints",
         model: "model.ts",
         locale: "zh-CN",
         // fit typescript allowImportingTsExtensions option, default is true
@@ -87,12 +101,12 @@ module.exports = defineConfig({
         // fit typescript verbatimModuleSyntax option, default is true
         verbatimModuleSyntax: false,
         // support filter tags
-        // filterTag: ['Media'],
+        // filterTag: ['Media'], // or can be a filter function: tag => boolean
         rewrite: (path) => path.replace(/^\/api/, ''),
         // ...otherOptions
     },
     // support filter endpoints, but currently only support generate command.
-    // filterEndpoint: ['/api/media/count'],
+    // filterEndpoint: ['/api/media/count'], // or can be a filter function: (endpoint, method, tag) => boolean
     // default is `true` so you can also ignore this.
     intro: true,
     // set line endings for output code.
@@ -102,6 +116,20 @@ module.exports = defineConfig({
     //   return {name: 'enum_member_key', initializer: 'enum_member_value'}
     // }
 })
+```
+
+and your `@/api/model` like this:
+
+```typescript
+// your api endpoint response schema
+export interface ResultSchema<D = any> {
+  success?: boolean;
+  code: number;
+  message?: string;
+  timestamp?: string;
+  data?: D;
+}
+export type DataExtact<R> = R extends ResultSchema<infer D> ? D : R
 ```
 then you can just config a npm script to generate your api code in your package.json:
 
